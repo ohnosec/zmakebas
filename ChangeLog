@@ -1,0 +1,19 @@
+2004-05-01  Russell Marks  <russell.marks@ntlworld.com>
+
+	* Version 1.2.
+
+	* Fixed ignoring of escape sequences in REM statements. Thanks
+	again to Matthew Westcott.
+
+	* zmakebas.c: added support for embedding literal eight-bit
+	character codes into the output, for e.g. colour control codes.
+	Thanks to Matthew Westcott for the patch.
+
+2000-11-03  Russell Marks  <russell.marks@ntlworld.com>
+
+	* Version 1.1.
+
+	* zmakebas.1: minor fixes.
+
+	* Cleaned things up a little, made installation saner, added
+	uninstall target, and updated contact details.
