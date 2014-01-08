@@ -6,7 +6,7 @@ Convert text files into Spectrum Basic programs.
 
 LICENSE
 ===============
-* 
+* Public domain
 
 COMPILE TOOLS
 ===============
