@@ -5,7 +5,7 @@
 # I'm not entirely sure why I bothered supporting that. :-))
 #
 CC=gcc
-CFLAGS=-O -Wall -DHAVE_GETOPT -Zexe
+CFLAGS=-O -Wall -DHAVE_GETOPT
 
 # these set where the executable and man page are installed
 PREFIX=/usr/local
