@@ -1,3 +1,101 @@
+This is Cat's Eye Technologies fork of zmakebas, a tokenizer for
+Spectrum BASIC files.  It takes a BASIC program source, as a text
+file, as input, and produces a .TAP file containing the tokenized
+program, as output.
+
+This was forked from OS2World's APP-EMULATOR-zmakebas, because it
+was convenient to do so.  The changes to port it to OS/2 were
+trivial and have been reverted.  It compiles under Ubuntu 12.04
+and I would be extremely surprised if it didn't also compile under
+FreeBSD, Cygwin, etc.
+
+The original readme documents are included below, in this order:
+
+*   The original zmakebas readme
+*   The readme for the OS/2 port
+*   OS2World's readme
+
+- - - -
+
+zmakebas 1.2 - convert text files into Spectrum Basic programs.
+Public domain by Russell Marks.
+
+
+Description
+-----------
+
+zmakebas converts a Spectrum Basic program written as a text file into
+an actual speccy Basic file (as a .TAP file, or optionally a raw
+headerless file).
+
+Using zmakebas rather than (say) writing the Basic in an emulator
+means you can write using a nicer editor, and can use tools which work
+on text files, etc. Also, with the `-l' option you can write without
+line numbers, using labels in their place where necessary.
+
+The program was originally intended to be used simply to make little
+loader programs, so they wouldn't have to be sourceless binaries.
+However, I went to a fair amount of effort to make sure it'd work for
+bigger, more serious programs too, so you can also use it for that
+kind of thing.
+
+
+Installation
+------------
+
+While I think zmakebas should be fairly portable, I've only ever
+compiled it on Linux and MS-DOS. Things should be ok for Linux as-is -
+just do `make' then (as root) `make install'.
+
+
+Miscellaneous
+-------------
+
+See the man page for details of how to use zmakebas.
+
+There's a short demo file showing the use of escape sequences for UDGs
+and block graphics characters etc. here, named `demo.bas'. You can use
+`zmakebas demo.bas' to generate an `out.tap' file from it. A version
+using labels is in `demolbl.bas', which can be converted with
+`zmakebas -l demolbl.bas'.
+
+
+Contacting me
+-------------
+
+You can email me at russell.marks@ntlworld.com.
+
+
+Share and enjoy! 
+
+-Rus.
+
+- - - -
+
+This is a quick port of zmakebas for OS/2.
+
+I needed only to add -Zexe to the build flags into the original makefile.
+
+ZMakeBas is actually a program to convert BASIC programs (written for the great Sinclair ZX Spectrum
+or its US release, the TS2068) into .TAP files which can be directly loaded into an emulator, or
+transferred to a real Speccy.
+
+This port was built with GCC 3.3.5 and the build environment made by Paul Smedley.
+
+For details on how to use zmakebas.exe, read the README file and the included manpage (sorry for
+not processing it - I still didn't configure the proper tools).
+
+If you like these programs, please consider making a donation to Paul Smedley, which is doing
+a tremendous amount of work to let us have more and more programs updated and new, OS/2 native.
+
+Have fun!
+
+Mentore Siesto
+Pisa, Italy
+mentore.siesto@alice.it
+
+- - - -
+
 APP-EMULATOR-zmakebas
 =====================
 
