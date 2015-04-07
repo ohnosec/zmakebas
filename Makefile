@@ -16,7 +16,7 @@ MANDIR=$(PREFIX)/man/man1
 
 all: zmakebas
 
-zmakebas: zmakebas.o
+zmakebas: zmakebas.o zmakebas.guide
 	$(CC) $(CFLAGS) -o zmakebas zmakebas.o
 
 installdirs:
@@ -33,6 +33,8 @@ uninstall:
 clean:
 	$(RM) *~ *.o zmakebas
 
+zmakebas.guide: zmakebas.1
+	rman -fAmigaGuide zmakebas.1 >zmakebas.guide
 
 # The stuff below makes the distribution tgz.
 
