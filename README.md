@@ -1,3 +1,28 @@
+This readme is a mess due to the history of this program and where I originally forked it from :)
+
+Any queries specifically relating to the Amiga builds should be raised on the issue tracker.
+
+
+README_ADDENDUM states:
+
+Windows Installation:
+
+A 32 bit binary exe for the Windows platform is included, compiled using MinGW.
+
+All questions or issues relating to this binary should be sent to Alistair Neil and not the original author.
+
+Contacting me
+-------------
+
+You can email me at info@dazzleships.net or use the Contact Us link at http://www.dazzleships.net
+
+Alistair Neil
+
+
+Original README.md follows....
+
+
+
 This is Cat's Eye Technologies' fork of zmakebas, a tokenizer for
 Spectrum BASIC files.  It takes a BASIC program source, as a text
 file, as input, and produces a .TAP file containing the tokenized
