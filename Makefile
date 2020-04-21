@@ -6,6 +6,7 @@
 #
 CC=gcc
 CFLAGS=-O -Wall -DHAVE_GETOPT
+RMAN=./rman/rman
 
 # these set where the executable and man page are installed
 PREFIX=/usr/local
@@ -33,7 +34,7 @@ clean:
 	$(RM) *~ *.o zmakebas
 
 zmakebas.guide: zmakebas.1
-	./rman -fAmigaGuide ./zmakebas.1 >./zmakebas.guide
+	$(RMAN) -fAmigaGuide ./zmakebas.1 >./zmakebas.guide
 
 # The stuff below makes the distribution tgz.
 
