@@ -5,7 +5,7 @@
 .\"
 .\" zmakebas.1 - man page
 .\"
-.TH zmakebas 1 "1st May, 2004" "Version 1.2" "Retrocomputing Tools"
+.TH zmakebas 1 "31st March, 2020" "Version 1.5.2" "Retrocomputing Tools"
 .\"
 .\"------------------------------------------------------------------
 .\"
@@ -17,7 +17,7 @@ zmakebas \- convert text file into Spectrum Basic program
 .SH SYNOPSIS
 .PD 0
 .B zmakebas
-.RB [ -hlr ]
+.RB [ -hlprv ]
 .RB [ -a
 .IR startline ]
 .RB [ -i
@@ -55,6 +55,9 @@ kind of thing.
 .\"
 .SH OPTIONS
 .TP
+.I -v
+output version number.
+.TP
 .I -a
 make the generated file auto-start from line
 .IR startline .
@@ -79,6 +82,9 @@ output to
 .I output_file
 rather than the default `out.tap'. Use `-' as the filename to output
 on stdout.
+.TP
+.I -p
+output .p instead (set ZX81 mode).
 .TP
 .I -r
 write a raw headerless Basic file, rather than the default .TAP file.

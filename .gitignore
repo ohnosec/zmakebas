@@ -1,3 +1,5 @@
 zmakebas
+zmakebas_68k
 *.o
 *.tap
+*.p
