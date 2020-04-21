@@ -1,6 +1,39 @@
-2004-05-01  Russell Marks  <russell.marks@ntlworld.com>
+2020-04-20  Derek Bolli  <dbolli at bigpond.net.au>
+
+	* Added ZX Spectrum Next NextBASIC tokens to array of spectrum keywords (0x87 PEEK$ -> 0xA2 RMDIR)
+	* Added support for ZX Spectrum Next NextBASIC %$nnnn hex and %@nnnn binary notation with no FP inline representation required
+	* Fixed bug preventing zx81 mode FP inline representation being added for labels (introduced in v1.4.1-alpha)
+	* Version 1.5.2 (skips non-functioning v1.5.1)
+
+2015-07-26  Derek Bolli  <dbolli at bigpond.net.au>
+
+	* Combined the zmakebas 1.41-alpha version
+		from http://www.ianjohnston.com/
+		with the version by Antonio Villena (which I am calling 1.42) at
+		https://sourceforge.net/p/emuscriptoria/code/HEAD/tree/desprot/ZMakeBas.c
+			which fixes the DEF FN issue where the program fails to run with a Q Parameter Error
+			and can also create ZX81 .p files.
+	* Fixed a case statement increment issue in 1.42 memcpycnv that prevented compilation
+	* Fixed an issue in 1.42 dbl2spec where function would loop endlessly if num param was 0
+	* Windows version compiled by @utz at http://www.worldofspectrum.org/forums/discussion/51025/fix-for-the-def-fn-bug-of-zmakebas#latest
+	* Version 1.5.
+
+2014-08-08  Alistair Neil  <info@dazzleships.net>
+
+	* Added experimental support for a tiny subset of spectranet commands
+	* Added -v option for version output
+	* Version 1.4-alpha.
+
+2014-08-06  Alistair Neil  <info@dazzleships.net>
+
+	* Fixed usagehelp not displayed if no arguments provided.
+	* Version 1.3.
+
+2004-07-23  Russell Marks  <russell.marks@ntlworld.com>
 
 	* Version 1.2.
+
+2004-05-01  Russell Marks  <russell.marks@ntlworld.com>
 
 	* Fixed ignoring of escape sequences in REM statements. Thanks
 	again to Matthew Westcott.
