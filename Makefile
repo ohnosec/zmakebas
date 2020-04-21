@@ -33,7 +33,7 @@ clean:
 	$(RM) *~ *.o zmakebas
 
 zmakebas.guide: zmakebas.1
-	rman -fAmigaGuide zmakebas.1 >zmakebas.guide
+	./rman -fAmigaGuide ./zmakebas.1 >./zmakebas.guide
 
 # The stuff below makes the distribution tgz.
 

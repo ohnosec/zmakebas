@@ -1,5 +1,8 @@
 zmakebas
 zmakebas_68k
+zmakebas.exe
+zmakebas.guide
 *.o
 *.tap
 *.p
+
