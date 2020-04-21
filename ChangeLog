@@ -1,3 +1,8 @@
+2020-04-21  Chris Young  <chris at unsatisfactorysoftware.co.uk>
+        * Added -3 switch to allow writing of +3DOS compatible files
+          (suitable to copy onto a +3 disk image or Next SD card)
+        * Version 1.6
+
 2020-04-20  Derek Bolli  <dbolli at bigpond.net.au>
 
 	* Added ZX Spectrum Next NextBASIC tokens to array of spectrum keywords (0x87 PEEK$ -> 0xA2 RMDIR)

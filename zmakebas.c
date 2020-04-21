@@ -22,7 +22,7 @@
 #define MSDOS
 #endif
 
-#define VERSION          	"1.5.2"
+#define VERSION          	"1.6"
 #define DEFAULT_OUTPUT		"out.tap"
 #define REM_TOKEN_NUM		234
 #define PEEK_TOKEN_NUM		190						// :dbolli:20200420 19:00:13 Added ZX Spectrum PEEK token code (v1.5.2)
@@ -255,10 +255,10 @@ char infile[1024], outfile[1024];
 
 #define MAX_LABEL_LEN	16
 
-/* this is needed for tap files too: */
-unsigned char headerbuf[0x74];
+/* this is needed for tap and +3 files too: */
+unsigned char headerbuf[0x80];
 
-int output_tape = 1, use_labels = 0, zx81mode = 0;
+int output_tape = 1, output_dos = 0, use_labels = 0, zx81mode = 0;
 unsigned int startline = 0x8000;
 int autostart = 10, autoincr = 2;
 char speccy_filename[11];
@@ -322,7 +322,7 @@ int getopt(int argc, char *argv[], char *optstring) {
 
 /* This routine converts normal ASCII code to special code used in ZX81.
  */
-void *memcpycnv(void *dst, void *src, size_t num) {
+void memcpycnv(void *dst, void *src, size_t num) {
   unsigned char in;
 
   while (num--){
@@ -542,7 +542,7 @@ void parse_options(int argc, char *argv[]) {
     opterr = 0;
     startlabel[0] = 0;
     do
-        switch (getopt(argc, argv, "pa:hi:ln:o:rs:v")) {
+        switch (getopt(argc, argv, "pa:hi:ln:o:r3s:v")) {
       		case 'p':
 				zx81mode= 1; break;
             case 'a':
@@ -584,6 +584,10 @@ void parse_options(int argc, char *argv[]) {
                 break;
             case 'r': /* output raw file */
                 output_tape = 0;
+                break;
+            case '3': /* output PLUS3DOS file */
+                output_tape = 0;
+                output_dos = 1;
                 break;
             case 's':
                 autostart = (int) atoi(optarg);
@@ -1302,8 +1306,48 @@ int main(int argc, char *argv[]) {
 			fprintf(out, "%c%c%c", (siz + 2)&255, (siz + 2) >> 8, chk = 255);
 			for (f = 0; f < siz; f++)
 				chk ^= filebuf[f];
-    	}
-    }
+		}
+	} else if(output_dos) {
+		unsigned int siz = fileptr - filebuf;
+		unsigned int dossiz = siz + 128;
+
+		/* +3DOS header */
+		headerbuf[0] = 'P';
+		headerbuf[1] = 'L';
+		headerbuf[2] = 'U';
+		headerbuf[3] = 'S';
+		headerbuf[4] = '3';
+		headerbuf[5] = 'D';
+		headerbuf[6] = 'O';
+		headerbuf[7] = 'S';                         /* PLUS3DOS */
+		headerbuf[8] = 0x1a;                        /* Soft-EOF */
+		headerbuf[9] = 0x01;                        /* Issue number */
+		headerbuf[10] = 0x00;                       /* Version number */
+		headerbuf[11] = (dossiz & 255);             /* File size */
+		headerbuf[12] = (dossiz / 256);             /* including header */
+		headerbuf[13] = 0;                          /* Also size, but BASIC header */
+		headerbuf[14] = 0;                          /* only 16-bits so don't need these */
+
+		headerbuf[15] = 0;                          /* Program */
+		headerbuf[16] = (siz & 255);                /* Size again */
+		headerbuf[17] = (siz / 256);                /* but 16-bit */
+		headerbuf[18] = (startline & 255);          /* Start line */
+		headerbuf[19] = (startline / 256);          /*   "    "   */
+		headerbuf[20] = (siz & 255);                /* Offset to prog */
+		headerbuf[21] = (siz / 256);                /* ZXOS puts the size in here again */
+		headerbuf[22] = 0;                          /* Not used */
+
+		for(f = 23; f < 127; f++)
+			headerbuf[f] = 0x00;                /* Not used */
+
+		/* calculate checksum */
+		chk = 0;
+		for (f = 0; f < 127; f++)
+			chk += headerbuf[f];
+		headerbuf[127] = chk % 256;
+
+		fwrite(headerbuf, 1, 128, out);
+	}
 
     fwrite(filebuf, 1, fileptr - filebuf, out);
 

@@ -5,7 +5,7 @@
 .\"
 .\" zmakebas.1 - man page
 .\"
-.TH zmakebas 1 "31st March, 2020" "Version 1.5.2" "Retrocomputing Tools"
+.TH zmakebas 1 "21st April, 2020" "Version 1.6" "Retrocomputing Tools"
 .\"
 .\"------------------------------------------------------------------
 .\"
@@ -17,7 +17,7 @@ zmakebas \- convert text file into Spectrum Basic program
 .SH SYNOPSIS
 .PD 0
 .B zmakebas
-.RB [ -hlprv ]
+.RB [ -hlp3rv ]
 .RB [ -a
 .IR startline ]
 .RB [ -i
@@ -88,6 +88,9 @@ output .p instead (set ZX81 mode).
 .TP
 .I -r
 write a raw headerless Basic file, rather than the default .TAP file.
+.TP
+.I -3
+write a +3DOS compatible Basic file, rather than the default .TAP file.
 .TP
 .I -s
 in labels mode, set starting line number (default 10).
