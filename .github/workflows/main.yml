@@ -5,37 +5,32 @@ on:
     branches: [ master ]
  
 jobs:
-<<<<<<< HEAD
-  build_guide:
+build_guide:
     runs-on: ubuntu-latest
-    name: build_guide
+    name: build_native
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/upload-artifact@v1
-        with:
-          name: zmakebas.1
-          path: ./zmakebas.1
       - uses: actions/checkout@v2
         with:
           repository: chris-y/rman
       - name: build_rman
         id: build_rman
         run: make -f Makefile
-      - name: Download zmakebas.1
+      - uses: actions/upload-artifact@v1
+        with:
+          name: rman
+          path: ./rman
+      - uses: actions/checkout@v2
+      - name: Download rman
         uses: actions/download-artifact@v1
         with:
-          name: zmakebas.1
+          name: rman
       - name: build_guide
         id: build_guide
-        run: |
-          ls -la
-          ./rman -fAmigaGuide ./zmakebas.1 >./zmakebas.guide
+        run: make -f Makefile
       - uses: actions/upload-artifact@v1
         with:
           name: zmakebas.guide
           path: ./zmakebas.guide
-=======
->>>>>>> parent of e36a71c... Build AmigaGuide documentation
   build_ppc:
     runs-on: ubuntu-latest
     container:
