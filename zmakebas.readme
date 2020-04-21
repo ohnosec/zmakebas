@@ -1,8 +1,8 @@
-Short:        Make ZX Spectrum .TAP from BASIC text
+Short:        BASIC Text to ZX Spectrum/ZX81 .TAP/.P
 Uploader:     chris@unsatisfactorysoftware.co.uk (Chris Young)
-Author:       Russell Marks
+Author:       Russell Marks and others
 Type:         util/conv
-Version:      1.2
+Version:      1.5.2
 Architecture: m68k-amigaos >= 2.0.4; ppc-amigaos >= 4.0.0
 
 Quick port/recompile of zmakebas.
@@ -11,124 +11,58 @@ Source code: http://github.com/chris-y/zmakebas
 The only change is the inclusion of documentation in AmigaGuide
 format.
 
-----
+Changelog:
 
-This is Cat's Eye Technologies' fork of zmakebas, a tokenizer for
-Spectrum BASIC files.  It takes a BASIC program source, as a text
-file, as input, and produces a .TAP file containing the tokenized
-program, as output.
+2020-04-20  Derek Bolli  <dbolli at bigpond.net.au>
 
-This was forked from OS2World's APP-EMULATOR-zmakebas, because it
-was convenient to do so.  The changes to port it to OS/2 were
-trivial and have been reverted.  It compiles under Ubuntu 12.04
-and I would be extremely surprised if it didn't also compile under
-FreeBSD, Cygwin, etc.
+	* Added ZX Spectrum Next NextBASIC tokens to array of spectrum keywords (0x87 PEEK$ -> 0xA2 RMDIR)
+	* Added support for ZX Spectrum Next NextBASIC %$nnnn hex and %@nnnn binary notation with no FP inline representation required
+	* Fixed bug preventing zx81 mode FP inline representation being added for labels (introduced in v1.4.1-alpha)
+	* Version 1.5.2 (skips non-functioning v1.5.1)
 
-The original readme documents are included below, in this order:
+2015-07-26  Derek Bolli  <dbolli at bigpond.net.au>
 
-*   The original zmakebas readme
-*   The readme for the OS/2 port
-*   OS2World's readme
+	* Combined the zmakebas 1.41-alpha version
+		from http://www.ianjohnston.com/
+		with the version by Antonio Villena (which I am calling 1.42) at
+		https://sourceforge.net/p/emuscriptoria/code/HEAD/tree/desprot/ZMakeBas.c
+			which fixes the DEF FN issue where the program fails to run with a Q Parameter Error
+			and can also create ZX81 .p files.
+	* Fixed a case statement increment issue in 1.42 memcpycnv that prevented compilation
+	* Fixed an issue in 1.42 dbl2spec where function would loop endlessly if num param was 0
+	* Windows version compiled by @utz at http://www.worldofspectrum.org/forums/discussion/51025/fix-for-the-def-fn-bug-of-zmakebas#latest
+	* Version 1.5.
 
-- - - -
+2014-08-08  Alistair Neil  <info@dazzleships.net>
 
-zmakebas 1.2 - convert text files into Spectrum Basic programs.
-Public domain by Russell Marks.
+	* Added experimental support for a tiny subset of spectranet commands
+	* Added -v option for version output
+	* Version 1.4-alpha.
 
+2014-08-06  Alistair Neil  <info@dazzleships.net>
 
-Description
------------
+	* Fixed usagehelp not displayed if no arguments provided.
+	* Version 1.3.
 
-zmakebas converts a Spectrum Basic program written as a text file into
-an actual speccy Basic file (as a .TAP file, or optionally a raw
-headerless file).
+2004-07-23  Russell Marks  <russell.marks@ntlworld.com>
 
-Using zmakebas rather than (say) writing the Basic in an emulator
-means you can write using a nicer editor, and can use tools which work
-on text files, etc. Also, with the `-l` option you can write without
-line numbers, using labels in their place where necessary.
+	* Version 1.2.
 
-The program was originally intended to be used simply to make little
-loader programs, so they wouldn't have to be sourceless binaries.
-However, I went to a fair amount of effort to make sure it'd work for
-bigger, more serious programs too, so you can also use it for that
-kind of thing.
+2004-05-01  Russell Marks  <russell.marks@ntlworld.com>
 
+	* Fixed ignoring of escape sequences in REM statements. Thanks
+	again to Matthew Westcott.
 
-Installation
-------------
+	* zmakebas.c: added support for embedding literal eight-bit
+	character codes into the output, for e.g. colour control codes.
+	Thanks to Matthew Westcott for the patch.
 
-While I think zmakebas should be fairly portable, I've only ever
-compiled it on Linux and MS-DOS. Things should be ok for Linux as-is -
-just do `make` then (as root) `make install`.
+2000-11-03  Russell Marks  <russell.marks@ntlworld.com>
 
+	* Version 1.1.
 
-Miscellaneous
--------------
+	* zmakebas.1: minor fixes.
 
-See the man page for details of how to use zmakebas.
-
-There's a short demo file showing the use of escape sequences for UDGs
-and block graphics characters etc. here, named `demo.bas`. You can use
-`zmakebas demo.bas` to generate an `out.tap` file from it. A version
-using labels is in `demolbl.bas`, which can be converted with
-`zmakebas -l demolbl.bas`.
-
-
-Contacting me
--------------
-
-You can email me at russell.marks@ntlworld.com.
-
-
-Share and enjoy! 
-
--Rus.
-
-- - - -
-
-This is a quick port of zmakebas for OS/2.
-
-I needed only to add -Zexe to the build flags into the original makefile.
-
-ZMakeBas is actually a program to convert BASIC programs (written for the great Sinclair ZX Spectrum
-or its US release, the TS2068) into .TAP files which can be directly loaded into an emulator, or
-transferred to a real Speccy.
-
-This port was built with GCC 3.3.5 and the build environment made by Paul Smedley.
-
-For details on how to use zmakebas.exe, read the README file and the included manpage (sorry for
-not processing it - I still didn't configure the proper tools).
-
-If you like these programs, please consider making a donation to Paul Smedley, which is doing
-a tremendous amount of work to let us have more and more programs updated and new, OS/2 native.
-
-Have fun!
-
-Mentore Siesto
-Pisa, Italy
-mentore.siesto@alice.it
-
-- - - -
-
-APP-EMULATOR-zmakebas
-=====================
-
-Convert text files into Spectrum Basic programs.
-
-
-LICENSE
-===============
-* Public domain
-
-COMPILE TOOLS
-===============
-* 
-
-AUTHORS
-===============
-* Port: Mentore Siesto
-
-LINKS
-===============
-* 
+	* Cleaned things up a little, made installation saner, added
+	uninstall target, and updated contact details.
+  
