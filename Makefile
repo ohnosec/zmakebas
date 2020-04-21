@@ -13,8 +13,7 @@ PREFIX=/usr/local
 BINDIR=$(PREFIX)/bin
 MANDIR=$(PREFIX)/man/man1
 
-
-all: zmakebas
+all: zmakebas zmakebas.guide
 
 zmakebas: zmakebas.o
 	$(CC) $(CFLAGS) -o zmakebas zmakebas.o
@@ -33,6 +32,8 @@ uninstall:
 clean:
 	$(RM) *~ *.o zmakebas
 
+zmakebas.guide: zmakebas.1
+	rman -fAmigaGuide zmakebas.1 >zmakebas.guide
 
 # The stuff below makes the distribution tgz.
 
