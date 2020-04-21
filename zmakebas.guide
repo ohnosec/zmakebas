@@ -9,7 +9,7 @@ zmakebas - convert text file into Spectrum Basic program
 @endnode
 
 @node sect1 "Synopsis"
- @{b}zmakebas@{ub} [@{b}-hlr@{ub}] [@{b}-a@{ub} @{i}startline@{ui}] [@{b}-i@{ub} @{i}incr@{ui}] [@{b}-n@{ub} @{i}speccy_filename@{ui}] [@{b}-o@{ub} @{i}output_file@{ui}] [@{b}-s@{ub} @{i}line@{ui}] [@{i}input_file@{ui}]@{i}@{ui}     
+ @{b}zmakebas@{ub} [@{b}-hlprv@{ub}] [@{b}-a@{ub} @{i}startline@{ui}] [@{b}-i@{ub} @{i}incr@{ui}] [@{b}-n@{ub} @{i}speccy_filename@{ui}] [@{b}-o@{ub} @{i}output_file@{ui}] [@{b}-s@{ub} @{i}line@{ui}] [@{i}input_file@{ui}]@{i}@{ui}     
 
 
 @endnode
@@ -24,6 +24,9 @@ The program was originally intended to be used simply to make little loader prog
 
 @node sect3 "Options"
 
+
+ï¿½ @{i}-v@{ui} @{lindent 3}
+output version number. @{lindent 0}
 
 · @{i}-a@{ui} @{lindent 3}
 make the generated file auto-start from line @{i}startline@{ui}. If `-l' was specified, this can be a label, but don't forget to include the initial `@' to point this out. @{lindent 0}
@@ -42,6 +45,9 @@ specify filename to use in .TAP file (up to 10 chars), i.e. the filename the spe
 
 · @{i}-o@{ui} @{lindent 3}
 output to @{i}output_file@{ui} rather than the default `out.tap'. Use `-' as the filename to output on stdout. @{lindent 0}
+
+ï¿½ @{i}-p@{ui} @{lindent 3}
+output .p instead (set ZX81 mode). @{lindent 0}
 
 · @{i}-r@{ui} @{lindent 3}
 write a raw headerless Basic file, rather than the default .TAP file. @{lindent 0}
