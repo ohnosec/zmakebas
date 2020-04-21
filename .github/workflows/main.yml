@@ -5,7 +5,7 @@ on:
     branches: [ master ]
  
 jobs:
-build_guide:
+  build_guide:
     runs-on: ubuntu-latest
     name: build_native
     steps:
