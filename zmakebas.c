@@ -516,7 +516,7 @@ unsigned long grok_binary(unsigned char **ptrp, int textlinenum) {
 void usage_help() {
     printf("zmakebas - public domain by Russell Marks.\n\n");
 
-    printf("usage: zmakebas [-hlprv] [-a line] [-i incr] [-n speccy_filename]\n");
+    printf("usage: zmakebas [-hlpr3v] [-a line] [-i incr] [-n speccy_filename]\n");
     printf("                [-o output_file] [-s line] [input_file]\n\n");
 
     printf("        -v      output version number.\n");
@@ -529,6 +529,7 @@ void usage_help() {
             DEFAULT_OUTPUT);
 	printf("        -p      output .p instead (set ZX81 mode).\n");
     printf("        -r      output raw headerless file (default is .tap file).\n");
+    printf("        -3      output a +3DOS compatible file (default is .tap file).\n");
     printf("        -s      in labels mode, set starting line number ");
     printf("(default 10).\n");
 }
