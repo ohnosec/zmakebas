@@ -50,13 +50,13 @@ jobs:
   build_68k:
     runs-on: ubuntu-latest
     container:
-      image: amigadev/crosstools:m68k-amigaos
+      image: walkero/docker4amigavbcc:latest-m68k
     name: build_os3
     steps:
       - uses: actions/checkout@v2
       - name: buildos3
         id: buildos3
-        run: make -f Makefile zmakebas
+        run: make -f Makefile.os3 zmakebas
       - uses: actions/upload-artifact@v1
         with:
           name: zmakebas_os3
