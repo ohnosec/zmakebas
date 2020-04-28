@@ -5,7 +5,7 @@
 # I'm not entirely sure why I bothered supporting that. :-))
 #
 CC=vc +aos68k
-CFLAGS=-O
+CFLAGS=-c99 -O0
 
 # these set where the executable and man page are installed
 PREFIX=/usr/local
@@ -16,7 +16,7 @@ MANDIR=$(PREFIX)/man/man1
 
 all: zmakebas
 
-zmakebas: zmakebas.o zmakebas.guide
+zmakebas: zmakebas.o
 	$(CC) $(CFLAGS) -o zmakebas zmakebas.o -lmsoft
 
 installdirs:
