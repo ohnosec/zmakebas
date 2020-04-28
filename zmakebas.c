@@ -22,7 +22,7 @@
 #define MSDOS
 #endif
 
-#define VERSION          	"1.6"
+#define VERSION          	"1.6.1"
 #define DEFAULT_OUTPUT		"out.tap"
 #define REM_TOKEN_NUM		234
 #define PEEK_TOKEN_NUM		190						// :dbolli:20200420 19:00:13 Added ZX Spectrum PEEK token code (v1.5.2)
@@ -322,46 +322,46 @@ int getopt(int argc, char *argv[], char *optstring) {
 
 /* This routine converts normal ASCII code to special code used in ZX81.
  */
-void memcpycnv(void *dst, void *src, size_t num) {
+void memcpycnv(char *dst, char *src, size_t num) {
   unsigned char in;
 
   while (num--){
-    in= *((char *)src++);
+    in= *(src++);
     if ( in >= '0' && in <= '9' )
-      *((char *)dst++) = in - 20;
+      *(dst++) = in - 20;
     else if( in >= 'A' && in <= 'Z' )
-      *((char *)dst++) = in - 27;
+      *(dst++) = in - 27;
     else if( in >= 'a' && in <= 'z' )
-      *((char *)dst++) = in + 69;
+      *(dst++) = in + 69;
     else switch( in ) {
-      case 0x0d: *((char *)dst++) = 0x76; break; // enter
-      case 0x20: *((char *)dst++) = 0x00; break; // space
-      case 0x22: *((char *)dst++) = 0x0b; break; // "
-      case 0x24: *((char *)dst++) = 0x0d; break; // $
-      case 0x28: *((char *)dst++) = 0x10; break; // (
-      case 0x29: *((char *)dst++) = 0x11; break; // )
-      case 0x2a: *((char *)dst++) = 0x17; break; // *
-      case 0x2b: *((char *)dst++) = 0x15; break; // +
-      case 0x2c: *((char *)dst++) = 0x1a; break; // ,
-      case 0x2d: *((char *)dst++) = 0x16; break; // -
-      case 0x2e: *((char *)dst++) = 0x1b; break; // .
-      case 0x2f: *((char *)dst++) = 0x18; break; // /
-      case 0x3a: *((char *)dst++) = 0x0e; break; // :
-      case 0x3b: *((char *)dst++) = 0x19; break; // ;
-      case 0x3c: *((char *)dst++) = 0x13; break; // <
-      case 0x3d: *((char *)dst++) = 0x14; break; // =
-      case 0x3e: *((char *)dst++) = 0x12; break; // >
-      case 0x3f: *((char *)dst++) = 0x0f; break; // ?
-      case 0x7c: *((char *)dst++) = 0x41; break; // INKEY$
-      case 0x7d: *((char *)dst++) = 0x40; break; // RND
-      case 0x7e: *((char *)dst++) = in; // number
-                 *((char *)dst++) = *((char *)src++);
-                 *((char *)dst++) = *((char *)src++);
-                 *((char *)dst++) = *((char *)src++);
-                 *((char *)dst++) = *((char *)src++);
-                 *((char *)dst++) = *((char *)src++); break;
-      case 0x7f: *((char *)dst++) = 0x42; break; // PI
-      default: *((char *)dst++) = in;
+      case 0x0d: *(dst++) = 0x76; break; // enter
+      case 0x20: *(dst++) = 0x00; break; // space
+      case 0x22: *(dst++) = 0x0b; break; // "
+      case 0x24: *(dst++) = 0x0d; break; // $
+      case 0x28: *(dst++) = 0x10; break; // (
+      case 0x29: *(dst++) = 0x11; break; // )
+      case 0x2a: *(dst++) = 0x17; break; // *
+      case 0x2b: *(dst++) = 0x15; break; // +
+      case 0x2c: *(dst++) = 0x1a; break; // ,
+      case 0x2d: *(dst++) = 0x16; break; // -
+      case 0x2e: *(dst++) = 0x1b; break; // .
+      case 0x2f: *(dst++) = 0x18; break; // /
+      case 0x3a: *(dst++) = 0x0e; break; // :
+      case 0x3b: *(dst++) = 0x19; break; // ;
+      case 0x3c: *(dst++) = 0x13; break; // <
+      case 0x3d: *(dst++) = 0x14; break; // =
+      case 0x3e: *(dst++) = 0x12; break; // >
+      case 0x3f: *(dst++) = 0x0f; break; // ?
+      case 0x7c: *(dst++) = 0x41; break; // INKEY$
+      case 0x7d: *(dst++) = 0x40; break; // RND
+      case 0x7e: *(dst++) = in; // number
+                 *(dst++) = *(src++);
+                 *(dst++) = *(src++);
+                 *(dst++) = *(src++);
+                 *(dst++) = *(src++);
+                 *(dst++) = *(src++); break;
+      case 0x7f: *(dst++) = 0x42; break; // PI
+      default: *(dst++) = in;
     }
   }
 }
@@ -1204,7 +1204,7 @@ int main(int argc, char *argv[]) {
             *fileptr++ = (linelen & 255);
             *fileptr++ = (linelen >> 8);
 			if( zx81mode )
-				memcpycnv( fileptr, outbuf, linelen );
+				memcpycnv( (char *)fileptr, (char *)outbuf, linelen );
 			else
 				memcpy(fileptr, outbuf, linelen);
             fileptr += linelen;
