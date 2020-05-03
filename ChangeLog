@@ -1,3 +1,7 @@
+2020-04-28 Chris Young  <chris at unsatisfactorysoftware.co.uk>
+        * Minor changes so it builds on vbcc again
+        * Version 1.6.1
+        
 2020-04-21  Chris Young  <chris at unsatisfactorysoftware.co.uk>
         * Added -3 switch to allow writing of +3DOS compatible files
           (suitable to copy onto a +3 disk image or Next SD card)
