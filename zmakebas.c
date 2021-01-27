@@ -39,7 +39,7 @@ char *tokens[] = {
     "%listen #", "%listen#",
     "%accept #", "%accept#",
     "%close #", "%close#",
-    "%open #", "%open#",
+    "%fopen #", "%fopen#",
 	"%oneof", "",
 	"%mount", "",
 	"%umount", "",
