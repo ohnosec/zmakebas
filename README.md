@@ -58,11 +58,11 @@ You can get a pound sign (character 96 on a speccy) by using a backquote ( \` ).
 
 One input line normally equals one line of Basic, but you can use backslash as the last character of a line to continue the statement(s) on the next input line.
 
-###User Defined Graphics (UDG)
+### User Defined Graphics (UDG)
 
 Rather than literally inserting block graphics characters and UDGs as you would on a speccy, you should use an escape sequence. These begin with a backslash ( `\` ). To get a UDG, follow this backslash with the UDG's letter, in the range 'a' to 'u' ('t' and 'u' will only have the desired effect if the program is run on a 48k speccy or in 48k mode, though); both upper and lowercase work. To get the copyright symbol, follow it with '*'. To get a block graphics character, follow it with a two-character 'drawing' of it using spaces, dots, apostrophes and/or colons. (For example, you'd get character 135 with '`\':`', and character 142 with '`\:.`'). To get a literal '@', follow it with '@'. (This is needed only if the '-l' option was given, but works whether it was or not.) To specify a literal eight-bit character code to dump into the Basic output file directly (to use for embedded colour control codes and the like), use braces and a C-syntax number e.g. '`\{42}`' for decimal, and '`\{0x42}`' for hex. Finally, as usual with such things, you can get a literal backslash by following the first backslash with another.
 
-###Automatic line numbers
+### Automatic line numbers
 If the '-l' option was given, line numbers must be omitted. Instead these are automatically generated in the output, and you can use labels where necessary as substitute line numbers for 'goto' commands etc. A label is defined with the text `@label:` at the beginning of a line (possibly preceded by whitespace). It can be referred to (before or after) with `@label`. Any printable ASCII character other than colon and space can be used in a label name. Here's an example of how labels work, showing both the input and (listing of) the output - first, the input:
 
 ```basic
