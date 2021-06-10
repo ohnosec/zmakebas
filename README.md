@@ -1,144 +1,111 @@
-This readme is a mess due to the history of this program and where I originally forked it from :)
+##Name
 
-Any queries specifically relating to the Amiga builds should be raised on the issue tracker.
+    zmakebas - convert text file into Spectrum Basic program
 
+##Synopsis
 
-README_ADDENDUM states:
+```shell
+zmakebas [-hlr] [-a startline] [-i incr] [-n speccy_filename] [-o output_file] [-s line] [input_file]
+```
 
-Windows Installation:
+##Description
 
-A 32 bit binary exe for the Windows platform is included, compiled using MinGW.
+zmakebas converts a Spectrum Basic program written as a text file into an actual speccy
+Basic file (as a .TAP file, or optionally a raw headerless file). By default, input comes
+from stdin, and output goes to 'out.tap'.
 
-All questions or issues relating to this binary should be sent to Alistair Neil and not the original author.
+Using zmakebas rather than (say) writing the Basic in an emulator means you can write
+using a nicer editor, and can use tools which work on text files, etc. Also, with the '-l'
+option you can write without line numbers, using labels in their place where necessary.
 
-Contacting me
--------------
+The program was originally intended to be used simply to make little loader programs, so
+they wouldn't have to be sourceless binaries. However, I went to a fair amount of effort
+to make sure it'd work for bigger, more serious programs too, so you can also use it for
+that kind of thing.
 
-You can email me at info@dazzleships.net or use the Contact Us link at http://www.dazzleships.net
+##Options
 
-Alistair Neil
+|option|comments|
+|------|--------|
+|`-a`|Make the generated file auto-start from line startline. If '`-l`' was specified, this can be a label, but don't forget to include the initial '@' to point this out.|
+|`-h`|Give help on command line options.|
+|`-i`|In labels mode, set line number increment (default 2).|
+|`-l`|Use labels rather than line numbers.|
+|`-n`|Specify filename to use in .TAP file (up to 10 chars), i.e. the filename the speccy will see. Default is a blank filename (10 spaces).|
+|`-o`|Send output to `output_file` rather than the default '`out.tap`'. Use '-' as the filename to output on stdout.|
+|`-r`|Write a raw headerless Basic file, rather than the default .TAP file.|
+|`-s`|In labels mode, set starting line number (default 10).|
 
+##Input format
 
-Original README.md follows....
+The input should be much as you would type into a speccy (a 128, to be precise), with the
+following exceptions:
 
+Lines starting with '#' are ignored. This allows you to insert comments which are not
+copied into the output Basic file.
 
+Blank lines are ignored.
 
-This is Cat's Eye Technologies' fork of zmakebas, a tokenizer for
-Spectrum BASIC files.  It takes a BASIC program source, as a text
-file, as input, and produces a .TAP file containing the tokenized
-program, as output.
+Case is ignored in keywords - 'print', 'PRINT', and 'pRiNt' are equivalent.
 
-This was forked from OS2World's APP-EMULATOR-zmakebas, because it
-was convenient to do so.  The changes to port it to OS/2 were
-trivial and have been reverted.  It compiles under Ubuntu 12.04
-and I would be extremely surprised if it didn't also compile under
-FreeBSD, Cygwin, etc.
+You can optionally use 'randomise' as an alternative to 'randomize'.
 
-The original readme documents are included below, in this order:
+You can get hex numbers by using 'bin' with a C-style hex number, e.g. to get 1234h you'd
+use `bin 0x1234`. (It appears in exactly that form in the speccy listing, though, so don't
+use it if you want to be able to edit the output program on a speccy.)
 
-*   The original zmakebas readme
-*   The readme for the OS/2 port
-*   OS2World's readme
+You can get a pound sign (character 96 on a speccy) by using a backquote ( \` ).
 
-- - - -
+One input line normally equals one line of Basic, but you can use backslash as the last character of a line to continue the statement(s) on the next input line.
 
-zmakebas 1.2 - convert text files into Spectrum Basic programs.
-Public domain by Russell Marks.
+###User Defined Graphics (UDG)
 
+Rather than literally inserting block graphics characters and UDGs as you would on a speccy, you should use an escape sequence. These begin with a backslash ('\'). To get a UDG, follow this backslash with the UDG's letter, in the range 'a' to 'u' ('t' and 'u' will only have the desired effect if the program is run on a 48k speccy or in 48k mode, though); both upper and lowercase work. To get the copyright symbol, follow it with '*'. To get a block graphics character, follow it with a two-character 'drawing' of it using spaces, dots, apostrophes and/or colons. (For example, you'd get character 135 with '\':', and character 142 with '\:.'.) To get a literal '@', follow it with '@'. (This is needed only if the '-l' option was given, but works whether it was or not.) To specify a literal eight-bit character code to dump into the Basic output file directly (to use for embedded colour control codes and the like), use braces and a C-syntax number e.g. '\{42}' for decimal, and '\{0x42}' for hex. Finally, as usual with such things, you can get a literal backslash by following the first backslash with another.
 
-Description
------------
+###Automatic line numbers
+If the '-l' option was given, line numbers must be omitted. Instead these are automatically generated in the output, and you can use labels where necessary as substitute line numbers for 'goto' commands etc. A label is defined with the text `@label:` at the beginning of a line (possibly preceded by whitespace). It can be referred to (before or after) with `@label`. Any printable ASCII character other than colon and space can be used in a label name. Here's an example of how labels work, showing both the input and (listing of) the output - first, the input:
 
-zmakebas converts a Spectrum Basic program written as a text file into
-an actual speccy Basic file (as a .TAP file, or optionally a raw
-headerless file).
+```basic
+goto @foo
+print "not seen"
+@foo: print "hello world"
+```
 
-Using zmakebas rather than (say) writing the Basic in an emulator
-means you can write using a nicer editor, and can use tools which work
-on text files, etc. Also, with the `-l` option you can write without
-line numbers, using labels in their place where necessary.
+Now the output:
 
-The program was originally intended to be used simply to make little
-loader programs, so they wouldn't have to be sourceless binaries.
-However, I went to a fair amount of effort to make sure it'd work for
-bigger, more serious programs too, so you can also use it for that
-kind of thing.
+```basic
+10 GO TO 14
+12 PRINT "not seen"
+14 PRINT "hello world"
+```
 
+Note that case is significant for labels; 'foo' and 'FOO' are different.
 
-Installation
-------------
+##Bugs
 
-While I think zmakebas should be fairly portable, I've only ever
-compiled it on Linux and MS-DOS. Things should be ok for Linux as-is -
-just do `make` then (as root) `make install`.
+There's almost no syntax checking. To do this would require a complete parser, which would be overkill I think. What's wrong with `'C Nonsense in BASIC'` as a syntax check, anyway? :-)
 
+Excess spaces are removed everywhere other than in strings and rem statements. I think this is generally what you'd want, but it could be seen as a bad thing I s'pose.
 
-Miscellaneous
--------------
+Labels are substituted even in string literals. That's arguably a feature not a bug - the problem is, the label name has to be followed by whitespace or a colon or EOL when referenced, which is fine for more normal references but is less than ideal for references in strings.
 
-See the man page for details of how to use zmakebas.
+In the label-using mode, two passes are made over the input, which usually means the input must be from a file. If you like making one-liner Basic programs with 'echo' and the like, I'm afraid you'll have to use line numbers. :-)
 
-There's a short demo file showing the use of escape sequences for UDGs
-and block graphics characters etc. here, named `demo.bas`. You can use
-`zmakebas demo.bas` to generate an `out.tap` file from it. A version
-using labels is in `demolbl.bas`, which can be converted with
-`zmakebas -l demolbl.bas`.
+The inline floating-point numbers which have to be generated are not always exactly the same as the speccy would generate - but they usually are, and even when they're not the difference is extremely small and due to rounding error on the speccy's part. For example, 0.5 is encoded by the speccy as `7F 7F FF FF FF` (exponent -1, mantissa approx. `0.9999999997672`) and by zmakebas as `80 00 00 00 00` (exponent 0, mantissa 0.5).
 
+zmakebas has most of the same (parsing) problems, relative to the original basic editor, that the 128 editor has. Specifically, you can't use variable names which clash with reserved words, so e.g. 'ink ink' doesn't work; and certain tightly-packed constructions you might expect to work, like `chr$a`, don't (you need a space or bracket after `CHR$`). These can be more of a problem with zmakebas though, due to the lack of syntax checking.
 
-Contacting me
--------------
+The way tokenisation is done is sub-optimal, to say the least. If you ran this code on a Z80, even the 128 editor's tokenisation would seem quick in comparison. (Here's a hint of the full horror of it - program lines take exponentially longer to tokenise the longer they are.) However, since I never had a conversion take more than about a second on my old 486 (it took a second for a 10k program), it hardly seems worth the effort of fixing.
 
-You can email me at russell.marks@ntlworld.com.
+zmakebas has no problem with translating BIN numbers of more than 16 bits, unlike the speccy, though numbers with more than 32 significant bits can only be approximated, and on machines where 'unsigned long' is no more than 32 bits they'll be very approximate. :-) (If this sounds confusing, you should note that BIN numbers are translated when entered, and only the 5-byte inline form is dealt with at runtime. This also explains why the speccy tolerates the 'bin 0x...' construction.)
 
+On machines without FP hardware, zmakebas will be rather slow (this is due to the need to generate inline FP numbers). 
 
-Share and enjoy! 
-
--Rus.
-
-- - - -
-
-This is a quick port of zmakebas for OS/2.
-
-I needed only to add -Zexe to the build flags into the original makefile.
-
-ZMakeBas is actually a program to convert BASIC programs (written for the great Sinclair ZX Spectrum
-or its US release, the TS2068) into .TAP files which can be directly loaded into an emulator, or
-transferred to a real Speccy.
-
-This port was built with GCC 3.3.5 and the build environment made by Paul Smedley.
-
-For details on how to use zmakebas.exe, read the README file and the included manpage (sorry for
-not processing it - I still didn't configure the proper tools).
-
-If you like these programs, please consider making a donation to Paul Smedley, which is doing
-a tremendous amount of work to let us have more and more programs updated and new, OS/2 native.
-
-Have fun!
-
-Mentore Siesto
-Pisa, Italy
-mentore.siesto@alice.it
-
-- - - -
-
-APP-EMULATOR-zmakebas
-=====================
-
-Convert text files into Spectrum Basic programs.
+Since Basic is an acronym, pedants will doubtless insist I should write it as 'BASIC'. But we live in a world with 'laser' etc., and at least I can be bothered to capitalise the thing, right? :-)
 
 
-LICENSE
-===============
-* Public domain
+##AUTHOR
 
-COMPILE TOOLS
-===============
-* 
+Russell Marks (russell.marks@ntlworld.com).
 
-AUTHORS
-===============
-* Port: Mentore Siesto
-
-LINKS
-===============
-* 
+See [ABOUT](./about) for more info on forks and versions. 
