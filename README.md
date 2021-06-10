@@ -1,14 +1,14 @@
-##Name
+## Name
 
     zmakebas - convert text file into Spectrum Basic program
 
-##Synopsis
+## Synopsis
 
 ```shell
 zmakebas [-hlr] [-a startline] [-i incr] [-n speccy_filename] [-o output_file] [-s line] [input_file]
 ```
 
-##Description
+## Description
 
 zmakebas converts a Spectrum Basic program written as a text file into an actual speccy
 Basic file (as a .TAP file, or optionally a raw headerless file). By default, input comes
@@ -23,7 +23,7 @@ they wouldn't have to be sourceless binaries. However, I went to a fair amount o
 to make sure it'd work for bigger, more serious programs too, so you can also use it for
 that kind of thing.
 
-##Options
+## Options
 
 |option|comments|
 |------|--------|
@@ -36,7 +36,7 @@ that kind of thing.
 |`-r`|Write a raw headerless Basic file, rather than the default .TAP file.|
 |`-s`|In labels mode, set starting line number (default 10).|
 
-##Input format
+## Input format
 
 The input should be much as you would type into a speccy (a 128, to be precise), with the
 following exceptions:
@@ -60,7 +60,7 @@ One input line normally equals one line of Basic, but you can use backslash as t
 
 ###User Defined Graphics (UDG)
 
-Rather than literally inserting block graphics characters and UDGs as you would on a speccy, you should use an escape sequence. These begin with a backslash ('\'). To get a UDG, follow this backslash with the UDG's letter, in the range 'a' to 'u' ('t' and 'u' will only have the desired effect if the program is run on a 48k speccy or in 48k mode, though); both upper and lowercase work. To get the copyright symbol, follow it with '*'. To get a block graphics character, follow it with a two-character 'drawing' of it using spaces, dots, apostrophes and/or colons. (For example, you'd get character 135 with '\':', and character 142 with '\:.'.) To get a literal '@', follow it with '@'. (This is needed only if the '-l' option was given, but works whether it was or not.) To specify a literal eight-bit character code to dump into the Basic output file directly (to use for embedded colour control codes and the like), use braces and a C-syntax number e.g. '\{42}' for decimal, and '\{0x42}' for hex. Finally, as usual with such things, you can get a literal backslash by following the first backslash with another.
+Rather than literally inserting block graphics characters and UDGs as you would on a speccy, you should use an escape sequence. These begin with a backslash ( `\` ). To get a UDG, follow this backslash with the UDG's letter, in the range 'a' to 'u' ('t' and 'u' will only have the desired effect if the program is run on a 48k speccy or in 48k mode, though); both upper and lowercase work. To get the copyright symbol, follow it with '*'. To get a block graphics character, follow it with a two-character 'drawing' of it using spaces, dots, apostrophes and/or colons. (For example, you'd get character 135 with '`\':`', and character 142 with '`\:.`'). To get a literal '@', follow it with '@'. (This is needed only if the '-l' option was given, but works whether it was or not.) To specify a literal eight-bit character code to dump into the Basic output file directly (to use for embedded colour control codes and the like), use braces and a C-syntax number e.g. '`\{42}`' for decimal, and '`\{0x42}`' for hex. Finally, as usual with such things, you can get a literal backslash by following the first backslash with another.
 
 ###Automatic line numbers
 If the '-l' option was given, line numbers must be omitted. Instead these are automatically generated in the output, and you can use labels where necessary as substitute line numbers for 'goto' commands etc. A label is defined with the text `@label:` at the beginning of a line (possibly preceded by whitespace). It can be referred to (before or after) with `@label`. Any printable ASCII character other than colon and space can be used in a label name. Here's an example of how labels work, showing both the input and (listing of) the output - first, the input:
@@ -81,7 +81,7 @@ Now the output:
 
 Note that case is significant for labels; 'foo' and 'FOO' are different.
 
-##Bugs
+## Bugs
 
 There's almost no syntax checking. To do this would require a complete parser, which would be overkill I think. What's wrong with `'C Nonsense in BASIC'` as a syntax check, anyway? :-)
 
@@ -104,8 +104,8 @@ On machines without FP hardware, zmakebas will be rather slow (this is due to th
 Since Basic is an acronym, pedants will doubtless insist I should write it as 'BASIC'. But we live in a world with 'laser' etc., and at least I can be bothered to capitalise the thing, right? :-)
 
 
-##AUTHOR
+## AUTHOR
 
 Russell Marks (russell.marks@ntlworld.com).
 
-See [ABOUT](./about) for more info on forks and versions. 
+See [ABOUT](./ABOUT) for more info on forks and versions. 
