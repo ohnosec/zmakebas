@@ -39,6 +39,23 @@ char *tokens[] = {
     "%listen #", "%listen#",
     "%accept #", "%accept#",
     "%close #", "%close#",
+    "%fopen #", "%fopen#",
+	"%oneof", "",
+	"%mount", "",
+	"%umount", "",
+	"%cat", "",
+	"%cd", "",
+	"%fs", "",
+	"%load", "",
+	"%save", "",
+	"%aload", "",
+	"%asave", "",
+	"%tapein", "",
+	"%loadsnap", "",
+	"%connect", "",
+	"%opendir", "",
+	"%reclaim", "",
+	"%control", "",
     "-----", "",
     "copy", "",
     "return", "",
@@ -879,11 +896,18 @@ int main(int argc, char *argv[]) {
                 }
                 ptr = lcasebuf;
                 while ((ptr = strstr(ptr, *tarrptr)) != NULL) {
-                    // Check for special commands which dont generate a token (Alistair Neil))
-                    if (*(ptr - 1) == '%' && *tarrptr[0] != '%') {
+                    // Check for special commands which don't need to generate a token, and 
+                    // special commands which would wrongly match a standard token (e.g. `%open #`)
+					// (Alistair Neil & Robert Morrison))
+                    if (*(ptr) == '%' && *tarrptr[0] == '%') {
                         ptr += toklen;
                         continue;
                     }
+                    if (*(ptr-1) == '%' && *tarrptr[0] != '%') {
+                        ptr += toklen;
+                        continue;
+                    }
+
                     /* check it's not in the middle of a word etc., except for
                      * <>, <=, >=.
                      */
