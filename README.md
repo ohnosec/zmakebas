@@ -5,7 +5,7 @@
 ## Synopsis
 
 ```shell
-zmakebas [-hlr] [-a startline] [-i incr] [-n speccy_filename] [-o output_file] [-s line] [input_file]
+zmakebas [-hlp3rv] [-a startline] [-i incr] [-n speccy_filename] [-o output_file] [-s line] [input_file]
 ```
 
 ## Description
@@ -35,6 +35,9 @@ that kind of thing.
 |`-o`|Send output to `output_file` rather than the default '`out.tap`'. Use '-' as the filename to output on stdout.|
 |`-r`|Write a raw headerless Basic file, rather than the default .TAP file.|
 |`-s`|In labels mode, set starting line number (default 10).|
+|`-p`|Output .p instead (set ZX81 mode).|
+|`-3`|Write a +3DOS compatible Basic file, rather than the default .TAP file.|
+
 
 ## Input format
 
