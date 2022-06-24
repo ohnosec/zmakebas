@@ -22,12 +22,17 @@
 #define MSDOS
 #endif
 
-#define VERSION          	"1.6.1"
+#define VERSION          	"1.7.0"
 #define DEFAULT_OUTPUT		"out.tap"
 #define REM_TOKEN_NUM		234
 #define PEEK_TOKEN_NUM		190						// :dbolli:20200420 19:00:13 Added ZX Spectrum PEEK token code (v1.5.2)
 #define BIN_TOKEN_NUM		196
 #define DEFFN_TOKEN_NUM     206
+#define ON_TOKEN_NUM        144
+#define ON_ERR_TOKEN_NUM    123
+
+#define ERR_TOKEN           "err "
+#define ERR_TOKEN_LEN       (sizeof(ERR_TOKEN)-1)
 
 /* tokens are stored (and looked for) in reverse speccy-char-set order,
  * to avoid def fn/fn and go to/to screwups. There are two entries for
@@ -178,6 +183,18 @@ char *tokens[] = {
     "dpoke", "",
     "reg", "",
     "peek$", "",
+    "", "",
+    "", "",
+    "", "",
+    "", "",
+    "", "",
+    "", "",
+    "", "",
+    "reset", "",
+    "free", "",
+    "sound", "",
+    "stick", "",
+    "onerr", "",
     NULL
 };
 
@@ -913,7 +930,20 @@ int main(int argc, char *argv[]) {
                      */
                     if ((*tarrptr)[0] == '<' || (*tarrptr)[1] == '=' ||
                             (!isalpha(ptr[-1]) && !isalpha(ptr[toklen]) && !( !zx81mode && ( toknum == PEEK_TOKEN_NUM ) && ( ptr[toklen] == '$' )))		// :dbolli:20200420 18:54:45 Added check for PEEK that is actually PEEK$ (v1.5.2)
-                            && toknum >= 135) {		// :dbolli:20200331 14:48:51 Changed from toknum > 150 to include ZX Spectrum Next keywords (v1.5.2)
+                            && toknum >= 123) {
+
+                        /* handle the ON keyword that is used by both ZX Spectrum Next ON ERROR and the T/S 2000 ON ERR
+                         * if ON is followed by ERR then convert from the ZX Spectrum Next ON token to the T/S 2000 ON ERR token
+                         */
+                        if (toknum == ON_TOKEN_NUM) {
+                            ptr2 = ptr + toklen;
+                            while (*ptr2 == ' ') ptr2++;
+                            if (strncmp(ptr2, ERR_TOKEN, ERR_TOKEN_LEN) == 0) {
+                                toknum = ON_ERR_TOKEN_NUM;
+                                toklen = (ptr2 + ERR_TOKEN_LEN - 1) - ptr;
+                            }
+                        }
+
                         ptr2 = linestart + (ptr - lcasebuf);
                         /* the token text is overwritten in the lcase copy too, to
                          * avoid problems with e.g. go to/to.
