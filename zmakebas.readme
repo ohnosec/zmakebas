@@ -2,7 +2,7 @@ Short:        BASIC Text to ZX Spectrum/ZX81 .TAP/.P
 Uploader:     chris@unsatisfactorysoftware.co.uk (Chris Young)
 Author:       Russell Marks and others
 Type:         util/conv
-Version:      1.6.1
+Version:      1.7.0
 Architecture: m68k-amigaos >= 2.0.4; ppc-amigaos >= 4.0.0
 
 Quick port/recompile of zmakebas.
@@ -13,6 +13,10 @@ format.
 
 Changelog:
 
+2021-06-23 ohnosec
+        * Added T/S 1000 tokens to array of spectrum keywords (0x7B ON ERR -> 0x7F RESET)
+        * Version 1.7.0
+        
 2020-04-28 Chris Youn
         * Minor changes so it builds on vbcc again
         * Version 1.6.1

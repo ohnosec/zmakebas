@@ -1,3 +1,7 @@
+2021-06-23 ohnosec
+        * Added T/S 1000 tokens to array of spectrum keywords (0x7B ON ERR -> 0x7F RESET)
+        * Version 1.7.0
+
 2020-04-28 Chris Young  <chris at unsatisfactorysoftware.co.uk>
         * Minor changes so it builds on vbcc again
         * Version 1.6.1
