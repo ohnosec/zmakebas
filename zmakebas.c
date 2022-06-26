@@ -935,7 +935,7 @@ int main(int argc, char *argv[]) {
                         /* handle the ON keyword that is used by both ZX Spectrum Next ON ERROR and the T/S 2000 ON ERR
                          * if ON is followed by ERR then convert from the ZX Spectrum Next ON token to the T/S 2000 ON ERR token
                          */
-                        if (toknum == ON_TOKEN_NUM) {
+                        if (!zx81mode && toknum == ON_TOKEN_NUM) {
                             ptr2 = ptr + toklen;
                             while (*ptr2 == ' ') ptr2++;
                             if (strncmp(ptr2, ERR_TOKEN, ERR_TOKEN_LEN) == 0) {
