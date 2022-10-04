@@ -22,7 +22,7 @@
 #define MSDOS
 #endif
 
-#define VERSION          	"1.7.0"
+#define VERSION          	"1.7.1"
 #define DEFAULT_OUTPUT		"out.tap"
 #define REM_TOKEN_NUM		234
 #define PEEK_TOKEN_NUM		190						// :dbolli:20200420 19:00:13 Added ZX Spectrum PEEK token code (v1.5.2)
@@ -996,6 +996,9 @@ int main(int argc, char *argv[]) {
                                 (ptr[len] < 33 || ptr[len] > 126 || ptr[len] == ':')) {
                             unsigned char numbuf[20];
 
+                            
+                            if (remptr) *remptr = 1;                        // fix bug where a label on a line drops the REM statement on that line by temporarily removing the REM null until after label replacement
+
                             /* this could be optimised to use a single memmove(), but
                              * at least this way it's clear(er) what's happening.
                              */
@@ -1012,6 +1015,9 @@ int main(int argc, char *argv[]) {
 // 							else											// :dbolli:20200420 00:32:35 Commented out...
                             	memcpy(ptr, numbuf, len);
                             ptr += len;
+
+                            
+                            if (remptr) *remptr = 0;                        // restore the REM null
                             break;
                         }
                     }

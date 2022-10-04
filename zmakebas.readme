@@ -13,6 +13,10 @@ format.
 
 Changelog:
 
+2022-10-04 ohnosec
+        * Fixed bug where a label on a line dropped the REM statement on the same line
+        * Version 1.7.1
+
 2022-06-23 ohnosec
         * Added T/S 2000 tokens to array of spectrum keywords (0x7B ON ERR -> 0x7F RESET)
         * Version 1.7.0
