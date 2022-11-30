@@ -28,6 +28,7 @@
 #define PEEK_TOKEN_NUM		190						// :dbolli:20200420 19:00:13 Added ZX Spectrum PEEK token code (v1.5.2)
 #define BIN_TOKEN_NUM		196
 #define DEFFN_TOKEN_NUM     206
+#define VAL_TOKEN_NUM       176                     // :ryangray:20221120 Added ZX Spectrum VAL token code
 #define ON_TOKEN_NUM        144
 #define ON_ERR_TOKEN_NUM    123
 
@@ -929,7 +930,7 @@ int main(int argc, char *argv[]) {
                      * <>, <=, >=.
                      */
                     if ((*tarrptr)[0] == '<' || (*tarrptr)[1] == '=' ||
-                            (!isalpha(ptr[-1]) && !isalpha(ptr[toklen]) && !( !zx81mode && ( toknum == PEEK_TOKEN_NUM ) && ( ptr[toklen] == '$' )))		// :dbolli:20200420 18:54:45 Added check for PEEK that is actually PEEK$ (v1.5.2)
+                        (!isalpha(ptr[-1]) && !isalpha(ptr[toklen]) && !(!zx81mode && (toknum == PEEK_TOKEN_NUM || toknum == VAL_TOKEN_NUM) && (ptr[toklen] == '$')))		// :dbolli:20200420 18:54:45 Added check for PEEK that is actually PEEK$ (v1.5.2) // :ryangray:20221120 Added check for VAL that is actually VAL$ (v1.7.2)
                             && toknum >= 123) {
 
                         /* handle the ON keyword that is used by both ZX Spectrum Next ON ERROR and the T/S 2000 ON ERR
