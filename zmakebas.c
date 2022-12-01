@@ -995,30 +995,36 @@ int main(int argc, char *argv[]) {
                         int len = strlen(labels[f]);
                         if (memcmp(labels[f], ptr, len) == 0 &&
                                 (ptr[len] < 33 || ptr[len] > 126 || ptr[len] == ':')) {
-                            unsigned char numbuf[20];
 
-                            
-                            if (remptr) *remptr = 1;                        // fix bug where a label on a line drops the REM statement on that line by temporarily removing the REM null until after label replacement
+                            // if there is a REM on this line temporarily remove the REM null until after label replacement
+                            // this allows the REM to be part of the line while the label is substituted by the line number
+                            if (remptr) *remptr = 1;                        // fix bug where a label corrupts a following REM statement
 
                             /* this could be optimised to use a single memmove(), but
                              * at least this way it's clear(er) what's happening.
                              */
-                            /* switch text for label. first, remove text */
+                            // switch text for label. first, remove text
                             memmove(ptr - 1, ptr + len, strlen(ptr + len) + 1);
-                            /* make number string */
+                            // make line number string
+                            unsigned char numbuf[20];
                             sprintf(numbuf, "%d", label_lines[f]);
-                            len = strlen(numbuf);
-                            /* insert room for number string */
+                            int numlen = strlen(numbuf);
+                            // insert room for number string
                             ptr--;
-                            memmove(ptr + len, ptr, strlen(ptr) + 1);
+                            memmove(ptr + numlen, ptr, strlen(ptr) + 1);
 // 							if ( zx81mode )									// :dbolli:20200420 00:32:35 Commented out conversion to ZX81 chars as this prevents adding inline FP representation later on (v1.5.2)
-// 								memcpycnv( ptr, numbuf, len );				// :dbolli:20200420 00:32:35 Commented out...
+// 								memcpycnv( ptr, numbuf, numlen );			// :dbolli:20200420 00:32:35 Commented out...
 // 							else											// :dbolli:20200420 00:32:35 Commented out...
-                            	memcpy(ptr, numbuf, len);
-                            ptr += len;
-
+                            	memcpy(ptr, numbuf, numlen);
+                            ptr += numlen;
                             
-                            if (remptr) *remptr = 0;                        // restore the REM null
+                            if (remptr) {                                   // fix bug where a label corrupts a following REM statement
+                                // the REM has moved around during label replacement so we need to move the remptr
+                                remptr -= (len + 1) - numlen;
+                                // add back the REM null so the REM statement doesn't take part in parsing
+                                *remptr = '\0';
+                            }
+
                             break;
                         }
                     }
