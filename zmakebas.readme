@@ -2,7 +2,7 @@ Short:        BASIC Text to ZX Spectrum/ZX81 .TAP/.P
 Uploader:     chris@unsatisfactorysoftware.co.uk (Chris Young)
 Author:       Russell Marks and others
 Type:         util/conv
-Version:      1.7.0
+Version:      1.7.2
 Architecture: m68k-amigaos >= 2.0.4; ppc-amigaos >= 4.0.0
 
 Quick port/recompile of zmakebas.
@@ -12,6 +12,11 @@ The only change is the inclusion of documentation in AmigaGuide
 format.
 
 Changelog:
+
+2022-12-01 ohnosec
+        * Fixed bug where VAL$ wasn't being recognized properly
+        * Fixed bug where a label on a line corrupted the REM statement on the same line
+        * Version 1.7.2
 
 2022-10-04 ohnosec
         * Fixed bug where a label on a line dropped the REM statement on the same line

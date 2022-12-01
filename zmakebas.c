@@ -22,13 +22,13 @@
 #define MSDOS
 #endif
 
-#define VERSION          	"1.7.1"
+#define VERSION          	"1.7.2"
 #define DEFAULT_OUTPUT		"out.tap"
 #define REM_TOKEN_NUM		234
 #define PEEK_TOKEN_NUM		190						// :dbolli:20200420 19:00:13 Added ZX Spectrum PEEK token code (v1.5.2)
 #define BIN_TOKEN_NUM		196
 #define DEFFN_TOKEN_NUM     206
-#define VAL_TOKEN_NUM       176                     // :ryangray:20221120 Added ZX Spectrum VAL token code
+#define VAL_TOKEN_NUM       176                     // :ryangray:20221120 Added ZX Spectrum VAL token code (v1.7.2)
 #define ON_TOKEN_NUM        144
 #define ON_ERR_TOKEN_NUM    123
 
