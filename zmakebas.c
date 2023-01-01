@@ -1165,7 +1165,7 @@ int main(int argc, char *argv[]) {
                     memcpy(outptr, ptr, ptr2 - ptr);
                     outptr += ptr2 - ptr;
 
-					if ( zx81mode || ( ptr[-1] != '$' && ptr[-1] != '@' ) ) {											// :dbolli:20200417 19:36:10 Don't insert 5 byte inline FP for ZX Spectrum Next $nnnn hex num and @nnn binary num
+					if ( zx81mode || ( ptr[-1] != '$' && ptr[-1] != '@' && !isalnum(ptr[-1]) ) ) {											// :dbolli:20200417 19:36:10 Don't insert 5 byte inline FP for ZX Spectrum Next $nnnn hex num and @nnn binary num
 						
 						*outptr++ = zx81mode ? 0x7e : 0x0e;
 					
