@@ -277,7 +277,7 @@ unsigned char headerbuf[0x80];
 
 int output_tape = 1, output_dos = 0, use_labels = 0, zx81mode = 0;
 unsigned int startline = 0x8000;
-int autostart = 10, autoincr = 2;
+int autostart = 10, autoincr = 2, autoincr_opt = 2;
 char speccy_filename[11];
 
 int labelend = 0;
@@ -584,9 +584,9 @@ void parse_options(int argc, char *argv[]) {
                 usage_help();
                 exit(1);
             case 'i':
-                autoincr = (int) atoi(optarg);
+                autoincr_opt = (int) atoi(optarg);
                 /* this is unnecessarily restrictive but keeps things a bit sane */
-                if (autoincr < 1 || autoincr > 1000)
+                if (autoincr_opt < 1 || autoincr_opt > 1000)
                     fprintf(stderr, "Label line incr. must be in the range 1 to 1000.\n"),
                     exit(1);
                 break;
@@ -726,6 +726,7 @@ int main(int argc, char *argv[]) {
     /* we make one pass if using line numbers, two if using labels */
 
     do {
+        autoincr = autoincr_opt;
         if (use_labels) linenum = autostart - autoincr;
         textlinenum = 0;
         if (passnum > 1 && fseek(in, 0L, SEEK_SET) != 0) {
@@ -798,9 +799,21 @@ int main(int argc, char *argv[]) {
 
             /* check there's no line numbers on label-using programs */
             if (use_labels && isdigit(*linestart)) {
-                fprintf(stderr, "line %d: line number used in labels mode\n",
-                        textlinenum);
-                exit(1);
+                linenum = (int) strtol(linestart, (char **) &linestart, 10);
+
+                if (linenum <= lastline) {
+                    fprintf(stderr, "line %d: line no. %d not greater than previous one (%d)\n",
+                            textlinenum, linenum, lastline);
+                    exit(1);
+                }
+                if (*linestart == '+' && isdigit(*(linestart+1))) {
+                    ++linestart;
+                    autoincr = (int) strtol(linestart, (char **) &linestart, 10);
+                    autoincr += autoincr == 0;
+                }
+                
+                /* lose any more spaces */
+                while (isspace(*linestart)) linestart++;
             }
 
             if (use_labels && *linestart == '@') {
