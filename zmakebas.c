@@ -912,8 +912,8 @@ int main(int argc, char *argv[]) {
                      * <>, <=, >=.
                      */
                     if ((*tarrptr)[0] == '<' || (*tarrptr)[1] == '=' ||
-                            (!isalpha(ptr[-1]) && !isalpha(ptr[toklen]) && !( !zx81mode && ( toknum == PEEK_TOKEN_NUM ) && ( ptr[toklen] == '$' )))		// :dbolli:20200420 18:54:45 Added check for PEEK that is actually PEEK$ (v1.5.2)
-                            && toknum >= 135) {		// :dbolli:20200331 14:48:51 Changed from toknum > 150 to include ZX Spectrum Next keywords (v1.5.2)
+                            ((!isalpha(ptr[-1]) && !isalpha(ptr[toklen]) && !( !zx81mode && ( toknum == PEEK_TOKEN_NUM ) && ( ptr[toklen] == '$' )))		// :dbolli:20200420 18:54:45 Added check for PEEK that is actually PEEK$ (v1.5.2)
+                            && toknum >= 135)) {		// :dbolli:20200331 14:48:51 Changed from toknum > 150 to include ZX Spectrum Next keywords (v1.5.2)
                         ptr2 = linestart + (ptr - lcasebuf);
                         /* the token text is overwritten in the lcase copy too, to
                          * avoid problems with e.g. go to/to.
