@@ -963,7 +963,7 @@ int main(int argc, char *argv[]) {
                     for (f = 0; f < labelend; f++) {
                         int len = strlen(labels[f]);
                         if (memcmp(labels[f], ptr, len) == 0 &&
-                                (ptr[len] < 33 || ptr[len] > 126 || ptr[len] == ':')) {
+                                (ptr[len] < 33 || ptr[len] > 126 || ispunct(ptr[len]))) {
                             unsigned char numbuf[20];
 
                             /* this could be optimised to use a single memmove(), but
