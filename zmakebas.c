@@ -277,7 +277,7 @@ unsigned char headerbuf[0x80];
 
 int output_tape = 1, output_dos = 0, use_labels = 0, zx81mode = 0;
 unsigned int startline = 0x8000;
-int autostart = 10, autoincr = 2;
+int autostart = 10, autoincr = 2, autoincr_opt = 2;
 char speccy_filename[11];
 
 int labelend = 0;
@@ -584,9 +584,9 @@ void parse_options(int argc, char *argv[]) {
                 usage_help();
                 exit(1);
             case 'i':
-                autoincr = (int) atoi(optarg);
+                autoincr_opt = (int) atoi(optarg);
                 /* this is unnecessarily restrictive but keeps things a bit sane */
-                if (autoincr < 1 || autoincr > 1000)
+                if (autoincr_opt < 1 || autoincr_opt > 1000)
                     fprintf(stderr, "Label line incr. must be in the range 1 to 1000.\n"),
                     exit(1);
                 break;
@@ -726,6 +726,7 @@ int main(int argc, char *argv[]) {
     /* we make one pass if using line numbers, two if using labels */
 
     do {
+        autoincr = autoincr_opt;
         if (use_labels) linenum = autostart - autoincr;
         textlinenum = 0;
         if (passnum > 1 && fseek(in, 0L, SEEK_SET) != 0) {
@@ -798,9 +799,21 @@ int main(int argc, char *argv[]) {
 
             /* check there's no line numbers on label-using programs */
             if (use_labels && isdigit(*linestart)) {
-                fprintf(stderr, "line %d: line number used in labels mode\n",
-                        textlinenum);
-                exit(1);
+                linenum = (int) strtol(linestart, (char **) &linestart, 10);
+
+                if (linenum <= lastline) {
+                    fprintf(stderr, "line %d: line no. %d not greater than previous one (%d)\n",
+                            textlinenum, linenum, lastline);
+                    exit(1);
+                }
+                if (*linestart == '+' && isdigit(*(linestart+1))) {
+                    ++linestart;
+                    autoincr = (int) strtol(linestart, (char **) &linestart, 10);
+                    autoincr += autoincr == 0;
+                }
+                
+                /* lose any more spaces */
+                while (isspace(*linestart)) linestart++;
             }
 
             if (use_labels && *linestart == '@') {
@@ -912,8 +925,8 @@ int main(int argc, char *argv[]) {
                      * <>, <=, >=.
                      */
                     if ((*tarrptr)[0] == '<' || (*tarrptr)[1] == '=' ||
-                            (!isalpha(ptr[-1]) && !isalpha(ptr[toklen]) && !( !zx81mode && ( toknum == PEEK_TOKEN_NUM ) && ( ptr[toklen] == '$' )))		// :dbolli:20200420 18:54:45 Added check for PEEK that is actually PEEK$ (v1.5.2)
-                            && toknum >= 135) {		// :dbolli:20200331 14:48:51 Changed from toknum > 150 to include ZX Spectrum Next keywords (v1.5.2)
+                            ((!isalpha(ptr[-1]) && !isalpha(ptr[toklen]) && !( !zx81mode && ( toknum == PEEK_TOKEN_NUM ) && ( ptr[toklen] == '$' )))		// :dbolli:20200420 18:54:45 Added check for PEEK that is actually PEEK$ (v1.5.2)
+                            && toknum >= 135)) {		// :dbolli:20200331 14:48:51 Changed from toknum > 150 to include ZX Spectrum Next keywords (v1.5.2)
                         ptr2 = linestart + (ptr - lcasebuf);
                         /* the token text is overwritten in the lcase copy too, to
                          * avoid problems with e.g. go to/to.
@@ -963,7 +976,7 @@ int main(int argc, char *argv[]) {
                     for (f = 0; f < labelend; f++) {
                         int len = strlen(labels[f]);
                         if (memcmp(labels[f], ptr, len) == 0 &&
-                                (ptr[len] < 33 || ptr[len] > 126 || ptr[len] == ':')) {
+                                (ptr[len] < 33 || ptr[len] > 126 || ispunct(ptr[len]))) {
                             unsigned char numbuf[20];
 
                             /* this could be optimised to use a single memmove(), but
@@ -1165,7 +1178,7 @@ int main(int argc, char *argv[]) {
                     memcpy(outptr, ptr, ptr2 - ptr);
                     outptr += ptr2 - ptr;
 
-					if ( zx81mode || ( ptr[-1] != '$' && ptr[-1] != '@' ) ) {											// :dbolli:20200417 19:36:10 Don't insert 5 byte inline FP for ZX Spectrum Next $nnnn hex num and @nnn binary num
+					if ( zx81mode || ( ptr[-1] != '$' && ptr[-1] != '@' && !isalnum(ptr[-1]) ) ) {											// :dbolli:20200417 19:36:10 Don't insert 5 byte inline FP for ZX Spectrum Next $nnnn hex num and @nnn binary num
 						
 						*outptr++ = zx81mode ? 0x7e : 0x0e;
 					
@@ -1199,7 +1212,11 @@ int main(int argc, char *argv[]) {
 							in_deffn= 0;
 						else if ( *ptr == ',' || *ptr == ')' )
 							*outptr++= 0x0e,
-							*outptr++= *outptr++= *outptr++= *outptr++= *outptr++= 0,
+							*outptr++= 0,
+							*outptr++= 0,
+							*outptr++= 0,
+							*outptr++= 0,
+							*outptr++= 0,
 							*outptr++= *ptr++;
 						if( *ptr != ' ' )
 							*outptr++= *ptr++;
@@ -1302,7 +1319,7 @@ int main(int argc, char *argv[]) {
 			headerbuf[47]= 0xbc;                      // PR_CC
 			headerbuf[48]= 33;                        // S_POSN
 			headerbuf[49]= 24;
-			headerbuf[50]= 0x0b01000000;                // CDFLAG
+			headerbuf[50]= 0b01000000;                // CDFLAG
 
 			/* write header */
 			fwrite( headerbuf, 1, 0x74, out );
