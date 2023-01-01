@@ -1199,7 +1199,11 @@ int main(int argc, char *argv[]) {
 							in_deffn= 0;
 						else if ( *ptr == ',' || *ptr == ')' )
 							*outptr++= 0x0e,
-							*outptr++= *outptr++= *outptr++= *outptr++= *outptr++= 0,
+							*outptr++= 0,
+							*outptr++= 0,
+							*outptr++= 0,
+							*outptr++= 0,
+							*outptr++= 0,
 							*outptr++= *ptr++;
 						if( *ptr != ' ' )
 							*outptr++= *ptr++;
