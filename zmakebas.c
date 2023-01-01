@@ -1319,7 +1319,7 @@ int main(int argc, char *argv[]) {
 			headerbuf[47]= 0xbc;                      // PR_CC
 			headerbuf[48]= 33;                        // S_POSN
 			headerbuf[49]= 24;
-			headerbuf[50]= 0b01000000;                // CDFLAG
+			headerbuf[50]= 0x40;                // CDFLAG
 
 			/* write header */
 			fwrite( headerbuf, 1, 0x74, out );
