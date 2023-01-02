@@ -340,10 +340,8 @@ int getopt(int argc, char *argv[], char *optstring) {
 /* This routine converts normal ASCII code to special code used in ZX81.
  */
 void memcpycnv(char *dst, char *src, size_t num) {
-  unsigned char in;
-
   while (num--){
-    in= *(src++);
+    unsigned char in= *(src++);
     if ( in >= '0' && in <= '9' )
       *(dst++) = in - 20;
     else if( in >= 'A' && in <= 'Z' )
@@ -483,7 +481,7 @@ int dbl2spec(double num, int *pexp, unsigned long *pman) {
 unsigned long grok_hex(unsigned char **ptrp, int textlinenum) {
     static char *hexits = "0123456789abcdefABCDEF", *lookup;
     unsigned char *ptr = *ptrp;
-    unsigned long v = 0, n;
+    unsigned long v = 0;
 
     /* we know the number starts with "0x" and we're pointing to it */
 
@@ -494,7 +492,7 @@ unsigned long grok_hex(unsigned char **ptrp, int textlinenum) {
     }
 
     while (*ptr && (lookup = strchr(hexits, *ptr)) != NULL) {
-        n = lookup - hexits;
+        unsigned long n = lookup - hexits;
         if (n > 15) n -= 6;
         v = v * 16 + n;
         ptr++;
@@ -702,7 +700,6 @@ int main(int argc, char *argv[]) {
     double num;
     int num_exp;
     unsigned long num_mantissa, num_ascii;
-    int textlinenum;
     int chk = 0;
     int alttok;
     int passnum = 1;
@@ -728,7 +725,7 @@ int main(int argc, char *argv[]) {
     do {
         autoincr = autoincr_opt;
         if (use_labels) linenum = autostart - autoincr;
-        textlinenum = 0;
+        int textlinenum = 0;
         if (passnum > 1 && fseek(in, 0L, SEEK_SET) != 0) {
             fprintf(stderr, "Need seekable input for label support\n");
             exit(1);
@@ -1092,7 +1089,7 @@ int main(int argc, char *argv[]) {
 
 					  /* parse number in decimal, octal or hex */
 					  num_ascii= strtoul((char *)ptr+2, NULL, 0);
-					  if( num_ascii<0 || num_ascii>255 )
+					  if( num_ascii>255 )
 						fprintf(stderr, "line %d: eight-bit character code out of range\n", textlinenum ),
 						exit(1);
 					  *outptr++= (char)num_ascii;
@@ -1131,7 +1128,7 @@ int main(int argc, char *argv[]) {
                                 }
                                 /* parse number in decimal, octal or hex */
                                 num_ascii = strtoul(ptr + 2, NULL, 0);
-                                if (num_ascii < 0 || num_ascii > 255) {
+                                if (num_ascii > 255) {
                                     fprintf(stderr,
                                             "line %d: eight-bit character code out of range\n",
                                             textlinenum);
@@ -1306,7 +1303,7 @@ int main(int argc, char *argv[]) {
 			headerbuf[28]= -1;                        // LAST_K
 			*(short*)(headerbuf+29)= -1;
 			headerbuf[31]= 55;                        // MARGIN
-			*(short*)(headerbuf+32)= zx81mode-2       // NXTLIN
+			*(short*)(headerbuf+32)= (zx81mode-2)       // NXTLIN
 							  ? siz+0x407d
 							  : startline+0x407e;
 			//*(short*)(headerbuf+34)= 0;             // OLDPPC
