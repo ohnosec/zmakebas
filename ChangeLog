@@ -1,3 +1,10 @@
+2023-01-01 imneme
+        * Fix handling of numbers in variable names
+        * Fix labels in data statements
+        * Can now specify line numbers in label mode, also
+          as 90+2 (start at 90, increment by 2 on next lines)
+        * Version 1.6.2
+
 2020-04-28 Chris Young  <chris at unsatisfactorysoftware.co.uk>
         * Minor changes so it builds on vbcc again
         * Version 1.6.1

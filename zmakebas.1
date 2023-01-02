@@ -141,7 +141,7 @@ control codes and the like), use braces and a C-syntax number e.g.
 such things, you can get a literal backslash by following the first
 backslash with another.
 .PP
-If the `-l' option was given, line numbers must be omitted. Instead
+If the `-l' option was given, line numbers can be omitted. Instead
 these are automatically generated in the output, and you can use
 labels where necessary as substitute line numbers for `goto' commands
 etc. A label is defined with the text `@label:' at the beginning of a
@@ -168,6 +168,8 @@ Now the output:
 Note that case
 .I is
 significant for labels; `foo' and `FOO' are different.
+.PP
+Line numbers can be specified as eg. 9000+2. In this case the current line will be numbered 9000 and subsequent lines will be incremented by two.
 .\"
 .\"------------------------------------------------------------------
 .\"

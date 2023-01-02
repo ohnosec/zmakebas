@@ -84,6 +84,16 @@ Now the output:
 
 Note that case is significant for labels; 'foo' and 'FOO' are different.
 
+You can specify a line number in labels mode. This can be useful when defining subroutines that we want to be at specific locations. You can also write:
+
+```
+9000+2 DATA "Blah"
+DATA "Foo"
+DATA "Bat"
+```
+to tell it to start at 9000 and increment by 2 for subsequent lines.
+
+
 ## Bugs
 
 There's almost no syntax checking. To do this would require a complete parser, which would be overkill I think. What's wrong with `'C Nonsense in BASIC'` as a syntax check, anyway? :-)
