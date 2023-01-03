@@ -6,3 +6,8 @@ zmakebas.guide
 *.tap
 *.p
 
+# visual studio files
+x64
+x32
+*.user
+*.aps
