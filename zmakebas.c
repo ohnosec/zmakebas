@@ -1435,7 +1435,8 @@ int main(int argc, char *argv[]) {
 
     if (output_tape) {
 		if ( zx81mode ) {
-			for ( int i= 0; i<25; i++ )
+			int i;
+			for ( i= 0; i<25; i++ )
 				fputc(0x76, out);
 			fputc(0x80, out);
 		}
