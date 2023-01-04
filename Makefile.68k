@@ -17,7 +17,7 @@ MANDIR=$(PREFIX)/man/man1
 all: zmakebas
 
 zmakebas: zmakebas.o
-	$(CC) $(CFLAGS) -o zmakebas zmakebas.o -lmsoft
+	$(CC) $(CFLAGS) -o zmakebas zmakebas.o -lmsoft -lauto
 
 installdirs:
 	/bin/sh ./mkinstalldirs $(BINDIR) $(MANDIR)
