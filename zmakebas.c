@@ -428,7 +428,7 @@ int dbl2spec(double num, int *pexp, unsigned long *pman) {
 
         /* It appears that the sign bit is always left as 0 when floating-point
          * numbers are embedded in programs, and the speccy appears to use the
-         * '-' character to detemine negativity - tests confirm this.
+         * '-' character to determine negativity - tests confirm this.
          * As such, we *completely ignore* the sign of the number.
          * exp is 0x80+exponent.
          */
@@ -560,7 +560,7 @@ void usage_help() {
     printf("        -n      set Spectrum filename (to be given in tape header).");
     printf("\n        -o      specify output file (default `%s').\n",
             DEFAULT_OUTPUT);
-	printf("        -p      output .p instead (set ZX81 mode).\n");
+    printf("        -p      output .p instead (set ZX81 mode).\n");
     printf("        -r      output raw headerless file (default is .tap file).\n");
     printf("        -3      output a +3DOS compatible file (default is .tap file).\n");
     printf("        -s      in labels mode, set starting line number ");
