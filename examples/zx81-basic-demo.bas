@@ -60,6 +60,8 @@
 		   TAB 0; "\:: \.: \:. \.. \': \ : \'. \ . \|: \|. \|'"
 4150 return
 
+# mctest
+
 5010 let REF=65*256+40
 5020 print "MC RESULT SHOULD BE "; REF;"."
 5030 let MC= usr 16527
