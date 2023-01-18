@@ -22,7 +22,7 @@
 #define MSDOS
 #endif
 
-#define VERSION          	"1.8.0"
+#define VERSION          	"1.8.1"
 #define DEFAULT_OUTPUT		"out.tap"
 #define REM_TOKEN_NUM		234
 #define PEEK_TOKEN_NUM		190						// :dbolli:20200420 19:00:13 Added ZX Spectrum PEEK token code (v1.5.2)
@@ -1215,7 +1215,10 @@ int main(int argc, char *argv[]) {
                     }
 
                     /* output text of number */
-                    memcpy(outptr, ptr, ptr2 - ptr);
+                    if (zx81mode) /* translate and copy ASCII chars to ZX81 */
+                        memcpycnv((char *)outptr, (char *)ptr, ptr2 - ptr);
+                    else
+                        memcpy(outptr, ptr, ptr2 - ptr);
                     outptr += ptr2 - ptr;
 
 					if ( zx81mode || ( ptr[-1] != '$' && ptr[-1] != '@' && !isalnum(ptr[-1]) ) ) {											// :dbolli:20200417 19:36:10 Don't insert 5 byte inline FP for ZX Spectrum Next $nnnn hex num and @nnn binary num
@@ -1263,11 +1266,14 @@ int main(int argc, char *argv[]) {
 					}
 				else
                     /* if not number, just output char */
-                    *outptr++ = *ptr++;
+                    if (zx81mode) /* translate and copy ASCII char to ZX81 */
+                        memcpycnv((char *)outptr++, (char *)ptr++, 1);
+                    else
+                        *outptr++ = *ptr++;
                 }
             }
 
-            *outptr++ = 0x0d; /* add terminating CR */
+            *outptr++ = zx81mode ? 0x76 : 0x0d; /* add terminating CR */
 
             /* output line */
             linelen = outptr - outbuf;
@@ -1284,10 +1290,7 @@ int main(int argc, char *argv[]) {
             *fileptr++ = (linenum & 255);
             *fileptr++ = (linelen & 255);
             *fileptr++ = (linelen >> 8);
-			if( zx81mode )
-				memcpycnv( (char *)fileptr, (char *)outbuf, linelen );
-			else
-				memcpy(fileptr, outbuf, linelen);
+            memcpy(fileptr, outbuf, linelen); // Any zx81mode translations are already done
             fileptr += linelen;
 
         } /* end of pass-making while() */

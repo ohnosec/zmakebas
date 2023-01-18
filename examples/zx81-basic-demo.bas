@@ -6,14 +6,21 @@
 #
 # See `demolbl.bas' for a label-using version.
 
+# Machine code test. The codes 1 and 201 should not get translated by the ASCII
+# to ZX81 character mapping, but if it is mis-applied, then the two bytes in-
+# between may get changed.
+
+1 REM MACHINE CODE:\{1}\{40}\{65}\{201}
 
 10 rem zmakebas demo
 
 # tabs (as below) are fine (they're removed)
 20 let HEADER=	2000
 25 let BLOCKDEM=4000
+30 let MCTEST  =5000
 
 40 gosub HEADER
+50 gosub MCTEST
 60 gosub BLOCKDEM
 70 stop
 
@@ -52,3 +59,14 @@
 4140 print at 17,0;"\   \'  \ ' \'' \.  \:  \.' \:' \!: \!. \!'",,, \
 		   TAB 0; "\:: \.: \:. \.. \': \ : \'. \ . \|: \|. \|'"
 4150 return
+
+# mctest
+
+5010 let REF=65*256+40
+5020 print "MC RESULT SHOULD BE "; REF;"."
+5030 let MC= usr 16527
+5040 print "THE MC RESULT IS ";MC;"."
+5050 print "ESCAPE CODE TEST ";
+5060 if MC<>REF then print "FAIL."
+5070 if MC=REF then print "PASS."
+5080 return
