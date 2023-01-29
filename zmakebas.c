@@ -22,7 +22,7 @@
 #define MSDOS
 #endif
 
-#define VERSION          	"1.8.1"
+#define VERSION          	"1.8.2"
 #define DEFAULT_OUTPUT		"out.tap"
 #define REM_TOKEN_NUM		234
 #define PEEK_TOKEN_NUM		190						// :dbolli:20200420 19:00:13 Added ZX Spectrum PEEK token code (v1.5.2)
@@ -264,10 +264,10 @@ char *tokens81[]={
   "len", "",
   "val", "",
   "code", "",
-  "val$", "",
+  "", "",
   "tab", "",
   "at", "",
-  "`", "",
+  "", "",
   "pi", "",
   "inkey$", "",
   "rnd", "",
@@ -385,6 +385,7 @@ void memcpycnv(char *dst, char *src, size_t num) {
       case 0x3d: *(dst++) = 0x14; break; // =
       case 0x3e: *(dst++) = 0x12; break; // >
       case 0x3f: *(dst++) = 0x0f; break; // ?
+      case 0x60: *(dst++) = 0xc0; break; // Backtick (`) to Quote Image
       case 0x7c: *(dst++) = 0x41; break; // INKEY$
       case 0x7d: *(dst++) = 0x40; break; // RND
       case 0x7e: *(dst++) = in; // number
