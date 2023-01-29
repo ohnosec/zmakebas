@@ -17,11 +17,13 @@
 # tabs (as below) are fine (they're removed)
 #	let HEADER=	2000
 #	let BLOCKDEM=4000
+#   let OTHER   =4500
 #   let MCTEST  =5000
 
 	gosub @header
-	gosub @mctest
 	gosub @blockdem
+    gosub @other
+	gosub @mctest
 	stop
 
 # init
@@ -35,16 +37,15 @@
 	print "  NON-ASCII CHARS IN ZMAKEBAS  "
 	print "\''\''\''\''\''\''\''\''\''\''\''\''\''\''\''\''";\
 	         "\''\''\''\''\''\''\''\''\''\''\''\''\''\''\''"
-	print
 	return
 
 @blockdem:
 
 #                   01234567890123456789012345678901
-	print at 9,0;"THE BLOCK GRAPHICS, FIRST AS ";\
+	print "THE BLOCK GRAPHICS, FIRST AS ";\
 		   "LISTED BY A FOR..NEXT LOOP, THEN ";\
 		   "VIA ZMAKEBAS\"S ESCAPE SEQUENCES:"
-	print at 13,0;
+	print
 	for F=0 to 10
 	print chr$(F);" ";
 	next F
@@ -55,9 +56,19 @@
 	next F
 	print
 	print
-	print at 17,0;"\   \'  \ ' \'' \.  \:  \.' \:' \!: \!. \!'",,, \
+	print "\   \'  \ ' \'' \.  \:  \.' \:' \!: \!. \!'",,, \
 		   TAB 0; "\:: \.: \:. \.. \': \ : \'. \ . \|: \|. \|'"
 	return
+
+# Other escapes or characers
+
+@other:
+    print
+    print "DOUBLE-BACKSLASH FOR POUND : \\"
+    print "BACKSLASH-AT FOR INV. POUND: \@"
+    print "BACKTICK FOR QUOTE IMAGE   : `"
+    print
+    return
 
 @mctest:
 

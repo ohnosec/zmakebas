@@ -17,12 +17,14 @@
 # tabs (as below) are fine (they're removed)
 20 let HEADER=	2000
 25 let BLOCKDEM=4000
+26 let OTHER   =4500
 30 let MCTEST  =5000
 
 40 gosub HEADER
-50 gosub MCTEST
-60 gosub BLOCKDEM
-70 stop
+50 gosub BLOCKDEM
+60 gosub OTHER
+70 gosub MCTEST
+80 stop
 
 # init
 
@@ -35,30 +37,37 @@
 2010 print "  NON-ASCII CHARS IN ZMAKEBAS  "
 2020 print "\''\''\''\''\''\''\''\''\''\''\''\''\''\''\''\''";\
 	         "\''\''\''\''\''\''\''\''\''\''\''\''\''\''\''"
-2030 print
-2040 return
+2030 return
 
 # blockdem
 
 #                   01234567890123456789012345678901
-4000 print at 9,0;"THE BLOCK GRAPHICS, FIRST AS ";\
+4000 print "THE BLOCK GRAPHICS, FIRST AS ";\
 		   "LISTED BY A FOR..NEXT LOOP, THEN ";\
 		   "VIA ZMAKEBAS\"S ESCAPE SEQUENCES:"
-4020 print at 13,0;
+4020 print
 4030 for F=0 to 10
 4040 print chr$(F);" ";
 4050 next F
 4060 print
 4070 print
-4080 print at 15,0;
 4090 for F=128 to 138
 4100 print chr$(F);" ";
 4110 next F
 4120 print
 4130 print
-4140 print at 17,0;"\   \'  \ ' \'' \.  \:  \.' \:' \!: \!. \!'",,, \
+4140 print "\   \'  \ ' \'' \.  \:  \.' \:' \!: \!. \!'",,, \
 		   TAB 0; "\:: \.: \:. \.. \': \ : \'. \ . \|: \|. \|'"
 4150 return
+
+# Other escapes or characers
+
+4500 print
+4510 print "DOUBLE-BACKSLASH FOR POUND : \\"
+4520 print "BACKSLASH-AT FOR INV. POUND: \@"
+4530 print "BACKTICK FOR QUOTE IMAGE   : `"
+4540 print
+4550 return
 
 # mctest
 
