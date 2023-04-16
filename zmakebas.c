@@ -22,7 +22,7 @@
 #define MSDOS
 #endif
 
-#define VERSION          	"1.8.2"
+#define VERSION          	"1.8.3"
 #define DEFAULT_OUTPUT		"out.tap"
 #define REM_TOKEN_NUM		234
 #define PEEK_TOKEN_NUM		190						// :dbolli:20200420 19:00:13 Added ZX Spectrum PEEK token code (v1.5.2)
@@ -1199,7 +1199,7 @@ int main(int argc, char *argv[]) {
                  * so that we only have to find the start - i.e. a non-alpha char,
                  * an optional `-' or `+', an optional `.', then a digit.
                  */
-                if (!in_rem && !in_quotes && !isalpha(ptr[-1]) &&
+                if (!in_rem && !in_quotes && !isalpha(ptr[-1]) && !isdigit(ptr[-1]) && 
                         (isdigit(*ptr) ||
                         ((*ptr == '-' || *ptr == '+' || *ptr == '.') && isdigit(ptr[1])) ||
                         ((*ptr == '-' || *ptr == '+') && ptr[1] == '.' && isdigit(ptr[2])))) {
@@ -1222,7 +1222,7 @@ int main(int argc, char *argv[]) {
                         memcpy(outptr, ptr, ptr2 - ptr);
                     outptr += ptr2 - ptr;
 
-					if ( zx81mode || ( ptr[-1] != '$' && ptr[-1] != '@' && !isalnum(ptr[-1]) ) ) {											// :dbolli:20200417 19:36:10 Don't insert 5 byte inline FP for ZX Spectrum Next $nnnn hex num and @nnn binary num
+					if ( zx81mode || ( ptr[-1] != '$' && ptr[-1] != '@' ) ) {											// :dbolli:20200417 19:36:10 Don't insert 5 byte inline FP for ZX Spectrum Next $nnnn hex num and @nnn binary num
 						
 						*outptr++ = zx81mode ? 0x7e : 0x0e;
 					
