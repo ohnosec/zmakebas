@@ -38,7 +38,7 @@ zmakebas.guide: zmakebas.1
 
 # The stuff below makes the distribution tgz.
 
-VERS=1.8.2
+VERS=1.8.3
 
 dist: tgz
 tgz: ../zmakebas-$(VERS).tar.gz

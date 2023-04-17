@@ -1,3 +1,7 @@
+2023-04-15 ryangray
+        * Fix "-num" or "+num" following a number leaving out the FP bytes after "num"
+        * Version 1.8.3
+
 2023-01-28 ryangray
         * Fix translation of backtick to the quote image token
         * Remove VAL$ from ZX81 tokens list

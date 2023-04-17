@@ -2,7 +2,7 @@ Short:        BASIC Text to ZX Spectrum/ZX81 .TAP/.P
 Uploader:     chris@unsatisfactorysoftware.co.uk (Chris Young)
 Author:       Russell Marks and others
 Type:         util/conv
-Version:      1.8.2
+Version:      1.8.3
 Architecture: m68k-amigaos >= 2.0.4; ppc-amigaos >= 4.0.0
 
 Quick port/recompile of zmakebas.
@@ -12,6 +12,10 @@ The only change is the inclusion of documentation in AmigaGuide
 format.
 
 Changelog:
+
+2023-04-15 ryangray
+        * Fix "-num" or "+num" following a number leaving out the FP bytes after "num"
+        * Version 1.8.3
 
 2023-01-28 ryangray
         * Fix translation of backtick to the quote image token
