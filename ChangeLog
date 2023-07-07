@@ -1,3 +1,7 @@
+2023-07-07 ryangray
+        * Fix bug not ending the in_deffn condition which would produce a bad 
+          line or cause zmakebas to hang.
+
 2023-04-15 ryangray
         * Fix "-num" or "+num" following a number leaving out the FP bytes after "num"
         * Version 1.8.3
