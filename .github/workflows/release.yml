@@ -7,8 +7,43 @@ on:
       - "v*"
 
 jobs:
+  build_ppc:
+    runs-on: ubuntu-latest
+    container:
+      image: amigadev/crosstools:ppc-amigaos
+    name: build_os4
+    steps:
+      - uses: actions/checkout@v2
+      - name: build_os4
+        id: build_os4
+        run: |
+          make -f Makefile zmakebas
+          mv ./zmakebas ./zmakebas_amigaos4
+      - name: Upload Amiga PPC build
+        uses: actions/upload-artifact@v3
+        with:
+          name: zmakebas_os4
+          path: ./zmakebas_amigaos4
+  build_68k:
+    runs-on: ubuntu-latest
+    container:
+      image: walkero/docker4amigavbcc:latest-m68k
+    name: build_os3
+    steps:
+      - uses: actions/checkout@v2
+      - name: buildos3
+        id: buildos3
+        run: |
+          make -f Makefile.68k zmakebas
+          mv ./zmakebas ./zmakebas_amigaos3
+      - name: Upload Amiga 68k build
+        uses: actions/upload-artifact@v3
+        with:
+          name: zmakebas_os3
+          path: ./zmakebas_amigaos3
   tagged-release:
     name: "Tagged Release"
+    needs: [build_ppc, build_68k]
     runs-on: "ubuntu-latest"
 
     steps:
@@ -18,13 +53,13 @@ jobs:
       - name: build_rman
         id: build_rman
         run: make -f Makefile
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v3
         with:
           name: rman
           path: ./rman
       - uses: actions/checkout@v2
       - name: Download rman
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: rman
       - name: build_guide
@@ -32,13 +67,17 @@ jobs:
         run: |
           chmod a+x ./rman/rman
           make -f Makefile
-      - uses: actions/upload-artifact@v1
+      - uses: actions/download-artifact@v3
         with:
-          name: zmakebas.guide
-          path: ./zmakebas.guide
+          name: zmakebas_os3
+      - uses: actions/download-artifact@v3
+        with:
+          name: zmakebas_os4
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           prerelease: false
           files: |
             ./zmakebas.guide
+            ./zmakebas_amigaos3
+            ./zmakebas_amigaos4
