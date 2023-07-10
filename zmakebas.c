@@ -22,7 +22,7 @@
 #define MSDOS
 #endif
 
-#define VERSION          	"1.8.3"
+#define VERSION          	"1.8.4"
 #define DEFAULT_OUTPUT		"out.tap"
 #define REM_TOKEN_NUM		234
 #define PEEK_TOKEN_NUM		190						// :dbolli:20200420 19:00:13 Added ZX Spectrum PEEK token code (v1.5.2)
@@ -1253,15 +1253,14 @@ int main(int argc, char *argv[]) {
 					/* special def fn case */
 					if ( in_deffn ) {
 						if( *ptr == '=' )
-							in_deffn= 0;
+							in_deffn = 0; /* Finished with the formal parameters */
 						else if ( *ptr == ',' || *ptr == ')' )
-							*outptr++= 0x0e,
+							*outptr++= 0x0e, /*  Insert inline Floating Point placeholder after each formal parameter */
 							*outptr++= 0,
 							*outptr++= 0,
 							*outptr++= 0,
 							*outptr++= 0,
-							*outptr++= 0,
-							*outptr++= *ptr++;
+							*outptr++= 0;
 						if( *ptr != ' ' )
 							*outptr++= *ptr++;
 					}
