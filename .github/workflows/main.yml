@@ -9,27 +9,28 @@ jobs:
     runs-on: ubuntu-latest
     name: build_native
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           repository: chris-y/rman
       - name: build_rman
         id: build_rman
         run: make -f Makefile
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v3
         with:
           name: rman
           path: ./rman
       - uses: actions/checkout@v2
       - name: Download rman
-        uses: actions/download-artifact@v1
+        uses: actions/download-artifact@v3
         with:
           name: rman
+          path: rman
       - name: build_guide
         id: build_guide
         run: |
           chmod a+x ./rman/rman
           make -f Makefile
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v3
         with:
           name: zmakebas.guide
           path: ./zmakebas.guide
@@ -39,11 +40,11 @@ jobs:
       image: amigadev/crosstools:ppc-amigaos
     name: build_os4
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: build_os4
         id: build_os4
         run: make -f Makefile zmakebas
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v3
         with:
           name: zmakebas_os4
           path: zmakebas
@@ -53,7 +54,7 @@ jobs:
       image: walkero/docker4amigavbcc:latest-m68k
     name: build_os3
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: buildos3
         id: buildos3
         run: make -f Makefile.68k zmakebas
