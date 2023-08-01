@@ -1,6 +1,12 @@
+2023-07-31 ryangray
+        * Fix bug of numbers after a + or - which followed a $ didn't include
+          the inline floating point bytes (such as: CODE a$-32)
+        * Version 1.8.5
+
 2023-07-07 ryangray
         * Fix bug not ending the in_deffn condition which would produce a bad 
           line or cause zmakebas to hang.
+        * Version 1.8.4
 
 2023-04-15 ryangray
         * Fix "-num" or "+num" following a number leaving out the FP bytes after "num"
