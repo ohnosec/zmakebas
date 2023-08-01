@@ -13,7 +13,7 @@ jobs:
       image: amigadev/crosstools:ppc-amigaos
     name: build_os4
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: build_os4
         id: build_os4
         run: |
@@ -30,7 +30,7 @@ jobs:
       image: walkero/docker4amigavbcc:latest-m68k
     name: build_os3
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: buildos3
         id: buildos3
         run: |
@@ -47,7 +47,7 @@ jobs:
     runs-on: "ubuntu-latest"
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           repository: chris-y/rman
       - name: build_rman
@@ -57,11 +57,12 @@ jobs:
         with:
           name: rman
           path: ./rman
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Download rman
         uses: actions/download-artifact@v3
         with:
           name: rman
+          path: rman
       - name: build_guide
         id: build_guide
         run: |
