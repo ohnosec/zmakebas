@@ -22,7 +22,7 @@
 #define MSDOS
 #endif
 
-#define VERSION          	"1.8.5"
+#define VERSION          	"1.8.6"
 #define DEFAULT_OUTPUT		"out.tap"
 #define REM_TOKEN_NUM		234
 #define PEEK_TOKEN_NUM		190						// :dbolli:20200420 19:00:13 Added ZX Spectrum PEEK token code (v1.5.2)

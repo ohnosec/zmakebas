@@ -1,3 +1,11 @@
+2025-06-16 ryangray
+        * Fix bug handling the TS2068 "ON ERR" keyword. It was changing toknum/
+          toklen from ON to ON ERR, causing it to skip handling other tokens, 
+          notably RESET. Instead, just skip past "ERR" and stay with token "ON",
+          handling the "ON ERR"/"ONERR" token later.
+        * Add support for the TS2068 DELETE keyword (overlooked in v1.7.0).
+        * Version 1.8.6
+
 2023-07-31 ryangray
         * Fix bug of numbers after a + or - which followed a $ didn't include
           the inline floating point bytes (such as: CODE a$-32)
