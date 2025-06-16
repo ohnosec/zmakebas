@@ -15,13 +15,13 @@ jobs:
       - name: build_rman
         id: build_rman
         run: make -f Makefile
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: rman
           path: ./rman
       - uses: actions/checkout@v2
       - name: Download rman
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: rman
           path: rman
@@ -30,7 +30,7 @@ jobs:
         run: |
           chmod a+x ./rman/rman
           make -f Makefile
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: zmakebas.guide
           path: ./zmakebas.guide
@@ -44,7 +44,7 @@ jobs:
       - name: build_os4
         id: build_os4
         run: make -f Makefile zmakebas
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: zmakebas_os4
           path: zmakebas
@@ -58,7 +58,7 @@ jobs:
       - name: buildos3
         id: buildos3
         run: make -f Makefile.68k zmakebas
-      - uses: actions/upload-artifact@v1
+      - uses: actions/upload-artifact@v4
         with:
           name: zmakebas_os3
           path: zmakebas
