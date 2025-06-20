@@ -22,7 +22,7 @@
 #define MSDOS
 #endif
 
-#define VERSION          	"1.8.5"
+#define VERSION          	"1.8.6"
 #define DEFAULT_OUTPUT		"out.tap"
 #define REM_TOKEN_NUM		234
 #define PEEK_TOKEN_NUM		190						// :dbolli:20200420 19:00:13 Added ZX Spectrum PEEK token code (v1.5.2)
@@ -195,7 +195,8 @@ char *tokens[] = {
     "free", "",
     "sound", "",
     "stick", "",
-    "onerr", "",
+    "on err", "onerr",  // code 123
+    "delete", "",       // code  12
     NULL
 };
 
@@ -916,6 +917,10 @@ int main(int argc, char *argv[]) {
                 if (alttok) toknum--;
                 alttok = !alttok;
                 if (**tarrptr == 0) continue;
+                if (toknum == 122) {
+                    // Skip from toknum 123 (ON ERR) down to 12 (DELETE) as there are no keywords between them in the tokens array
+                    toknum = 12;
+                }
                 toklen = strlen(*tarrptr);
                 // Check for table partition splitting special commands from standard commands (Alistair Neil))
                 if (strcmp(*tarrptr, "-----") == 0) {
@@ -942,17 +947,18 @@ int main(int argc, char *argv[]) {
                      */
                     if ((*tarrptr)[0] == '<' || (*tarrptr)[1] == '=' ||
                             ((!isalpha(ptr[-1]) && !isalpha(ptr[toklen]) && !( !zx81mode && ( (toknum == PEEK_TOKEN_NUM) || (toknum == VAL_TOKEN_NUM) ) && ( ptr[toklen] == '$' )))		// :dbolli:20200420 18:54:45 Added check for PEEK that is actually PEEK$ (v1.5.2)  // :ryangray:20221120 Added check for VAL that is actually VAL$ (v1.7.2)
-                            && toknum >= 123)) {		// :dbolli:20200331 14:48:51 Changed from toknum > 150 to include ZX Spectrum Next keywords (v1.5.2)
+                            && toknum >= 12)) {		// :dbolli:20200331 14:48:51 Changed from toknum > 150 to include ZX Spectrum Next keywords (v1.5.2) :ryangray:20250612 Moved toknum limit to 12 for TS2068 "delete"
 
-                        /* handle the ON keyword that is used by both ZX Spectrum Next ON ERROR and the T/S 2000 ON ERR
-                         * if ON is followed by ERR then convert from the ZX Spectrum Next ON token to the T/S 2000 ON ERR token
+                        /* Handle the ON keyword that is used by both ZX Spectrum Next ON ERROR and the T/S 2000 ON ERR
+                         * If ON is followed by ERR then it's the T/S 2000 ON ERR token not the Spectrum Next ON token, 
+                         * so skip past "ERR" and continue looking for ON tokens. We'll look for "ON ERR" token later.
                          */
                         if (!zx81mode && toknum == ON_TOKEN_NUM) {
                             ptr2 = ptr + toklen;
                             while (*ptr2 == ' ') ptr2++;
                             if (strncmp(ptr2, ERR_TOKEN, ERR_TOKEN_LEN) == 0) {
-                                toknum = ON_ERR_TOKEN_NUM;
-                                toklen = (ptr2 + ERR_TOKEN_LEN - 1) - ptr;
+                                ptr = (ptr2 + ERR_TOKEN_LEN - 1); /* skip past ERR */
+                                continue;
                             }
                         }
 

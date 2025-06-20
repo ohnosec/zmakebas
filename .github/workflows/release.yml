@@ -20,7 +20,7 @@ jobs:
           make -f Makefile zmakebas
           mv ./zmakebas ./zmakebas_amigaos4
       - name: Upload Amiga PPC build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: zmakebas_os4
           path: ./zmakebas_amigaos4
@@ -37,7 +37,7 @@ jobs:
           make -f Makefile.68k zmakebas
           mv ./zmakebas ./zmakebas_amigaos3
       - name: Upload Amiga 68k build
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: zmakebas_os3
           path: ./zmakebas_amigaos3
@@ -53,13 +53,13 @@ jobs:
       - name: build_rman
         id: build_rman
         run: make -f Makefile
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: rman
           path: ./rman
       - uses: actions/checkout@v3
       - name: Download rman
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: rman
           path: rman
@@ -68,10 +68,10 @@ jobs:
         run: |
           chmod a+x ./rman/rman
           make -f Makefile
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: zmakebas_os3
-      - uses: actions/download-artifact@v3
+      - uses: actions/download-artifact@v4
         with:
           name: zmakebas_os4
       - uses: "marvinpinto/action-automatic-releases@latest"
