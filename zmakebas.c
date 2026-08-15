@@ -743,9 +743,10 @@ int main(int argc, char *argv[]) {
     /* we make one pass if using line numbers, two if using labels */
 
     do {
+        int textlinenum = 0;
+
         autoincr = autoincr_opt;
         if (use_labels) linenum = autostart - autoincr;
-        int textlinenum = 0;
         if (passnum > 1 && fseek(in, 0L, SEEK_SET) != 0) {
             fprintf(stderr, "Need seekable input for label support\n");
             exit(1);
@@ -1012,6 +1013,8 @@ int main(int argc, char *argv[]) {
                         int len = strlen(labels[f]);
                         if (memcmp(labels[f], ptr, len) == 0 &&
                                 (ptr[len] < 33 || ptr[len] > 126 || ispunct(ptr[len]))) {
+                            unsigned char numbuf[20];
+                            int numlen;
 
                             // if there is a REM on this line temporarily remove the REM null until after label replacement
                             // this allows the REM to be part of the line while the label is substituted by the line number
@@ -1023,9 +1026,8 @@ int main(int argc, char *argv[]) {
                             // switch text for label. first, remove text
                             memmove(ptr - 1, ptr + len, strlen(ptr + len) + 1);
                             // make line number string
-                            unsigned char numbuf[20];
                             sprintf(numbuf, "%d", label_lines[f]);
-                            int numlen = strlen(numbuf);
+                            numlen = strlen(numbuf);
                             // insert room for number string
                             ptr--;
                             memmove(ptr + numlen, ptr, strlen(ptr) + 1);
