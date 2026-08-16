@@ -1,0 +1,357 @@
+name: multiplatform-tagged-release
+
+on:
+  push:
+    branches:
+      - "**"
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  SMOKE_TAP_SHA256: 2abdd89f49674d7f9dc30649ee3585d039d1a9e412829d6d8fe1c2ec46f6f87c
+
+concurrency:
+  group: multiplatform-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+jobs:
+  validation:
+    name: Release validator tests
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Test artifact validation
+        run: python3 -B -m unittest discover -s .github/scripts -p 'test_*.py' -v
+
+  windows:
+    name: Windows ${{ matrix.arch }}
+    runs-on: windows-2022
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x64
+            platform: x64
+            machine: x86_64
+            package: windows64
+          - arch: x86
+            platform: x86
+            machine: x86
+            package: windows32
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v3
+
+      - name: Build, smoke test, and package
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $outDir = Join-Path $PWD 'dist\${{ matrix.package }}'
+          New-Item -ItemType Directory -Force -Path $outDir | Out-Null
+          msbuild zmakebas.sln /m /t:Rebuild "/p:Configuration=Release;Platform=${{ matrix.platform }};OutDir=$outDir\"
+          if ($LASTEXITCODE -ne 0) { throw 'MSBuild failed' }
+
+          $exe = Join-Path $outDir 'zmakebas.exe'
+          $tap = Join-Path $outDir 'smoke.tap'
+          & $exe -o $tap examples\smoke.bas
+          if ($LASTEXITCODE -ne 0) { throw 'zmakebas smoke test failed' }
+          python .github\scripts\verify_release.py tap $tap --sha256 $env:SMOKE_TAP_SHA256
+          if ($LASTEXITCODE -ne 0) { throw 'TAP validation failed' }
+          python .github\scripts\verify_release.py binary $exe --format pe --machine ${{ matrix.machine }}
+          if ($LASTEXITCODE -ne 0) { throw 'PE architecture validation failed' }
+
+          $archive = Join-Path $PWD 'dist\zmakebas_${{ matrix.package }}.zip'
+          Compress-Archive -LiteralPath $exe -DestinationPath $archive -CompressionLevel Optimal
+          python .github\scripts\verify_release.py zip $archive --entry zmakebas.exe
+          if ($LASTEXITCODE -ne 0) { throw 'ZIP validation failed' }
+
+      - name: Upload package
+        uses: actions/upload-artifact@v7
+        with:
+          path: dist/zmakebas_${{ matrix.package }}.zip
+          archive: false
+          if-no-files-found: error
+          retention-days: 7
+
+  linux:
+    name: Linux ${{ matrix.arch }}
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x64
+            cflags: -m64
+            machine: x86_64
+            package: linux64
+          - arch: x86
+            cflags: -m32
+            machine: x86
+            package: linux32
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Install build dependencies
+        run: |
+          set -euo pipefail
+          if [ "${{ matrix.arch }}" = x86 ]; then
+            sudo apt-get update
+            sudo apt-get install --yes gcc-multilib
+          fi
+
+      - name: Build, smoke test, and package
+        run: |
+          set -euo pipefail
+          mkdir -p "dist/${{ matrix.package }}"
+          gcc ${{ matrix.cflags }} -std=gnu90 -O2 -Wall -Wextra \
+            -Werror=declaration-after-statement zmakebas.c -lm \
+            -o "dist/${{ matrix.package }}/zmakebas"
+          "dist/${{ matrix.package }}/zmakebas" \
+            -o "dist/${{ matrix.package }}/smoke.tap" examples/smoke.bas
+          python3 .github/scripts/verify_release.py tap \
+            "dist/${{ matrix.package }}/smoke.tap" \
+            --sha256 "$SMOKE_TAP_SHA256"
+          python3 .github/scripts/verify_release.py binary \
+            "dist/${{ matrix.package }}/zmakebas" \
+            --format elf --machine "${{ matrix.machine }}"
+          chmod 0755 "dist/${{ matrix.package }}/zmakebas"
+          tar -czf "dist/zmakebas_${{ matrix.package }}.tar.gz" \
+            -C "dist/${{ matrix.package }}" zmakebas
+          python3 .github/scripts/verify_release.py tar \
+            "dist/zmakebas_${{ matrix.package }}.tar.gz" --entry zmakebas
+
+      - name: Upload package
+        uses: actions/upload-artifact@v7
+        with:
+          path: dist/zmakebas_${{ matrix.package }}.tar.gz
+          archive: false
+          if-no-files-found: error
+          retention-days: 7
+
+  raspberry-pi:
+    name: Raspberry Pi ${{ matrix.bits }}-bit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - bits: 32
+            package: raspberrypi32
+            base_image: raspios_lite:2023-05-03
+            cpu: cortex-a7
+            uname: armv7l
+            machine: arm
+          - bits: 64
+            package: raspberrypi64
+            base_image: raspios_lite_arm64:2023-05-03
+            cpu: cortex-a53
+            uname: aarch64
+            machine: aarch64
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Prepare ARM artifact directory
+        run: mkdir -p dist
+
+      - name: Build and smoke test in Raspberry Pi OS
+        uses: pguyot/arm-runner-action@v2
+        with:
+          base_image: ${{ matrix.base_image }}
+          cpu: ${{ matrix.cpu }}
+          copy_artifact_path: dist/${{ matrix.package }}
+          copy_artifact_dest: dist
+          image_additional_mb: 512
+          optimize_image: "no"
+          commands: |
+            set -eu
+            apt-get update
+            apt-get install --yes gcc
+            mkdir -p "dist/${{ matrix.package }}"
+            gcc -std=gnu90 -O2 -Wall -Wextra \
+              -Werror=declaration-after-statement zmakebas.c -lm \
+              -o "dist/${{ matrix.package }}/zmakebas"
+            "dist/${{ matrix.package }}/zmakebas" \
+              -o "dist/${{ matrix.package }}/smoke.tap" examples/smoke.bas
+            uname -m > "dist/${{ matrix.package }}/uname.txt"
+
+      - name: Verify and package guest output
+        run: |
+          set -euo pipefail
+          test "$(tr -d '\r\n' < "dist/${{ matrix.package }}/uname.txt")" = "${{ matrix.uname }}"
+          python3 .github/scripts/verify_release.py tap \
+            "dist/${{ matrix.package }}/smoke.tap" \
+            --sha256 "$SMOKE_TAP_SHA256"
+          python3 .github/scripts/verify_release.py binary \
+            "dist/${{ matrix.package }}/zmakebas" \
+            --format elf --machine "${{ matrix.machine }}"
+          tar -czf "dist/zmakebas_${{ matrix.package }}.tar.gz" \
+            -C "dist/${{ matrix.package }}" zmakebas
+          python3 .github/scripts/verify_release.py tar \
+            "dist/zmakebas_${{ matrix.package }}.tar.gz" --entry zmakebas
+
+      - name: Upload package
+        uses: actions/upload-artifact@v7
+        with:
+          path: dist/zmakebas_${{ matrix.package }}.tar.gz
+          archive: false
+          if-no-files-found: error
+          retention-days: 7
+
+  dos:
+    name: DOS 16-bit
+    runs-on: ubuntu-22.04
+    timeout-minutes: 25
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Install DOSBox-X
+        run: sudo snap install dosbox-x --revision=1502 # 2026.01.02, amd64
+
+      - name: Prepare DOS workspace
+        run: |
+          set -euo pipefail
+          mkdir -p dist/dos
+          cp zmakebas.c dist/dos/ZMAKEBAS.C
+          cp examples/smoke.bas dist/dos/SMOKE.BAS
+
+      - name: Build and smoke test with Turbo C++ 3.00
+        uses: joncloud/dos-build-action@v1
+        with:
+          programs: |
+            $/turbo-c++/3.00:C:\TC
+            ${{ github.workspace }}/dist/dos:C:\SRC
+          conf: |
+            [cpu]
+            cycles=max
+            turbo=true
+          run: |
+            C:
+            CD \SRC
+            DEL SUCCESS.TXT
+            DEL FAILED.TXT
+            TCC -ml -O ZMAKEBAS.C > BUILD.LOG
+            IF ERRORLEVEL 1 GOTO FAIL
+            ZMAKEBAS.EXE -o SMOKE.TAP SMOKE.BAS >> BUILD.LOG
+            IF ERRORLEVEL 1 GOTO FAIL
+            ECHO OK>SUCCESS.TXT
+            GOTO END
+            :FAIL
+            ECHO FAILED>FAILED.TXT
+            :END
+
+      - name: Verify and package DOS output
+        run: |
+          set -euo pipefail
+          cat dist/dos/BUILD.LOG
+          test -f dist/dos/SUCCESS.TXT
+          exe="$(find dist/dos -maxdepth 1 -type f -iname 'zmakebas.exe' -print -quit)"
+          test -n "$exe"
+          test -f dist/dos/SMOKE.TAP
+          mkdir -p dist/dos-package
+          cp "$exe" dist/dos-package/ZMAKEBAS.EXE
+          python3 .github/scripts/verify_release.py tap dist/dos/SMOKE.TAP \
+            --sha256 "$SMOKE_TAP_SHA256"
+          python3 .github/scripts/verify_release.py binary \
+            dist/dos-package/ZMAKEBAS.EXE --format dos
+          zip -j -9 dist/zmakebas_dos16.zip dist/dos-package/ZMAKEBAS.EXE
+          python3 .github/scripts/verify_release.py zip \
+            dist/zmakebas_dos16.zip --entry ZMAKEBAS.EXE
+
+      - name: Upload package
+        uses: actions/upload-artifact@v7
+        with:
+          path: dist/zmakebas_dos16.zip
+          archive: false
+          if-no-files-found: error
+          retention-days: 7
+
+  amiga-release:
+    name: Build and publish existing Amiga release
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+    uses: ./.github/workflows/release.yml
+
+  release:
+    name: Upload multiplatform release assets
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    needs:
+      - amiga-release
+      - windows
+      - linux
+      - raspberry-pi
+      - dos
+      - validation
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - name: Check out validation script
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Download packages
+        uses: actions/download-artifact@v8
+        with:
+          pattern: "zmakebas_*"
+          path: release-assets
+          merge-multiple: true
+          skip-decompress: true
+
+      - name: Validate release assets
+        run: |
+          set -euo pipefail
+          mapfile -t actual < <(find release-assets -maxdepth 1 -type f \( -name '*.zip' -o -name '*.tar.gz' \) -printf '%f\n' | sort)
+          expected=(zmakebas_dos16.zip zmakebas_linux32.tar.gz zmakebas_linux64.tar.gz zmakebas_raspberrypi32.tar.gz zmakebas_raspberrypi64.tar.gz zmakebas_windows32.zip zmakebas_windows64.zip)
+          test "${actual[*]}" = "${expected[*]}"
+          python3 .github/scripts/verify_release.py zip release-assets/zmakebas_windows64.zip --entry zmakebas.exe
+          python3 .github/scripts/verify_release.py zip release-assets/zmakebas_windows32.zip --entry zmakebas.exe
+          python3 .github/scripts/verify_release.py tar release-assets/zmakebas_linux64.tar.gz --entry zmakebas
+          python3 .github/scripts/verify_release.py tar release-assets/zmakebas_linux32.tar.gz --entry zmakebas
+          python3 .github/scripts/verify_release.py tar release-assets/zmakebas_raspberrypi32.tar.gz --entry zmakebas
+          python3 .github/scripts/verify_release.py tar release-assets/zmakebas_raspberrypi64.tar.gz --entry zmakebas
+          python3 .github/scripts/verify_release.py zip release-assets/zmakebas_dos16.zip --entry ZMAKEBAS.EXE
+
+      - name: Verify existing release and upload assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          legacy_assets=(zmakebas.guide zmakebas_amigaos3 zmakebas_amigaos4)
+          assets="$(gh release view "$GITHUB_REF_NAME" --json assets --jq '.assets[].name')"
+          for asset in "${legacy_assets[@]}"; do
+            if ! grep -Fxq "$asset" <<< "$assets"; then
+              echo "Existing release is missing $asset" >&2
+              exit 1
+            fi
+          done
+          gh release upload "$GITHUB_REF_NAME" \
+            release-assets/*.zip release-assets/*.tar.gz --clobber

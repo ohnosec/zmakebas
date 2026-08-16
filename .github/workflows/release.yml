@@ -1,10 +1,8 @@
 ---
-name: "tagged-release"
+name: "amiga-release"
 
 on:
-  push:
-    tags:
-      - "v*"
+  workflow_call:
 
 jobs:
   build_ppc:
@@ -13,14 +11,14 @@ jobs:
       image: amigadev/crosstools:ppc-amigaos
     name: build_os4
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
       - name: build_os4
         id: build_os4
         run: |
           make -f Makefile zmakebas
           mv ./zmakebas ./zmakebas_amigaos4
       - name: Upload Amiga PPC build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: zmakebas_os4
           path: ./zmakebas_amigaos4
@@ -30,14 +28,14 @@ jobs:
       image: walkero/docker4amigavbcc:latest-m68k
     name: build_os3
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
       - name: buildos3
         id: buildos3
         run: |
           make -f Makefile.68k zmakebas
           mv ./zmakebas ./zmakebas_amigaos3
       - name: Upload Amiga 68k build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: zmakebas_os3
           path: ./zmakebas_amigaos3
@@ -47,19 +45,19 @@ jobs:
     runs-on: "ubuntu-latest"
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
         with:
           repository: chris-y/rman
       - name: build_rman
         id: build_rman
         run: make -f Makefile
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         with:
           name: rman
           path: ./rman
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
       - name: Download rman
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           name: rman
           path: rman
@@ -68,10 +66,10 @@ jobs:
         run: |
           chmod a+x ./rman/rman
           make -f Makefile
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: zmakebas_os3
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: zmakebas_os4
       - uses: "marvinpinto/action-automatic-releases@latest"
