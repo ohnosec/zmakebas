@@ -321,7 +321,7 @@ jobs:
       - name: Download packages
         uses: actions/download-artifact@v8
         with:
-          pattern: "zmakebas_*"
+          pattern: "zmakebas_*.*"
           path: release-assets
           merge-multiple: true
           skip-decompress: true
